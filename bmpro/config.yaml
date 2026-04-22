@@ -1,5 +1,5 @@
 name: BMPro RV Controller Bridge
-version: "0.2.8"
+version: "0.2.9"
 slug: bmpro
 description: >-
   Pairs with a BMPro RVMN101C control node over BLE and exposes lights,
