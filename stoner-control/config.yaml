@@ -1,12 +1,12 @@
-name: BMPro RV Controller Bridge
-version: "0.1.0"
-slug: bmpro
+name: Stoner Control RV Controller Bridge
+version: "1.0.0"
+slug: stoner-control
 description: >-
-  Pairs with a BMPro RVMN101C control node over BLE and exposes lights,
+  Pairs with a RVMN101C control node over BLE and exposes lights,
   climate zones, slides/awnings, and system status to Home Assistant via
   MQTT discovery.
-url: https://github.com/AshleyGrant/hassio-addons/tree/main/bmpro
-image: ghcr.io/ashleygrant/bmpro-research/bmpro-{arch}
+url: https://github.com/AshleyGrant/hassio-addons/tree/main/stoner-control
+image: ghcr.io/ashleygrant/stoner-control/ha-stoner-control-{arch}
 arch:
   - aarch64
   - amd64
@@ -15,21 +15,27 @@ host_dbus: true
 services:
   - mqtt:need
 options:
-  device_address: ""
   device_identifier: 1
   mqtt_discovery_prefix: homeassistant
-  mqtt_base_topic: bmpro
+  mqtt_base_topic: stoner-control
+  firebase_username:
+  firebase_password:
   log_level: info
 schema:
-  device_address: "match(^$|^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$)?"
   device_identifier: int(0,255)
   mqtt_discovery_prefix: str
   mqtt_base_topic: str
+  firebase_username: str?
+  firebase_password: password?
+  firebase_project_id: str?
+  firebase_api_key: str?
+  firebase_app_cloud_id: str?
   log_level: list(trace|debug|info|warn|error)
   mqtt_host: str?
   mqtt_port: int(1,65535)?
   mqtt_username: str?
   mqtt_password: password?
+  ble_device_id: str?
 startup: services
 boot: auto
 hassio_api: true
