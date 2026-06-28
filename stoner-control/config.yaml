@@ -1,5 +1,5 @@
 name: Stoner Control RV Controller Bridge
-version: "1.0.0"
+version: "1.0.1"
 slug: stoner-control
 description: >-
   Pairs with a RVMN101C control node over BLE and exposes lights,
