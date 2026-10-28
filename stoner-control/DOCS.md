@@ -180,6 +180,17 @@ the vehicle's `app.json`, HA will populate the entities.
 
 The bridge keeps itself connected without an add-on restart:
 
+- **Starting without the vehicle.** If the node is out of range or powered
+  off when the add-on starts, the add-on keeps trying to connect, and creates
+  no Home Assistant entities until it has connected and read the node's serial
+  number. Earlier versions created a placeholder device named "Disconnected"
+  instead, which duplicated every entity once the real device appeared. The
+  add-on deletes that placeholder device and its entities the first time it
+  connects. Earlier versions could also create a second device named after
+  the vehicle when they failed to read its serial number. That one worked, and
+  automations may use its entities, so the add-on leaves it alone. If you have
+  two devices named after the vehicle and want only one, delete the one you
+  don't use from its device page in Home Assistant.
 - **Vehicle link.** When the Bluetooth link drops, or you press **Force BLE
   Reconnect**, the add-on reconnects to the node, and the existing HA entities
   start updating again once it is back. The *BLE Connected* sensor shows the
