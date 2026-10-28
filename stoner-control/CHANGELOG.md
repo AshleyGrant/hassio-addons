@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.36
+
+- The add-on connects to the MQTT broker before the vehicle. While the RV is out of reach, *BLE Connected* now shows Off within a few seconds of start-up, instead of keeping whatever it showed when the add-on last stopped (#53).
+- If no MQTT broker can be found yet, for example while the Mosquitto app is still starting, the add-on logs why and keeps looking. Before, it stopped and had to be restarted (#53).
+
 ## 1.0.35
 
 - *Slideout Lockout* now shows On while the slide-outs are locked out (on a trailer, while it's hitched for towing) and Off otherwise, with a trailer icon. It used Home Assistant's lock class, which shows on as Unlocked, so it read backwards. The entity keeps its ID and history (#116).
