@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.35
+
+- *Slideout Lockout* now shows On while the slide-outs are locked out (on a trailer, while it's hitched for towing) and Off otherwise, with a trailer icon. It used Home Assistant's lock class, which shows on as Unlocked, so it read backwards. The entity keeps its ID and history (#116).
+
+## 1.0.34
+
+- New `mqtt_ssl` option: connect over TLS to an external MQTT broker set with `mqtt_host`. It was documented but couldn't be set, because it wasn't in the app's configuration schema. With TLS on and no `mqtt_port`, the app connects to port 8883, the standard MQTT-over-TLS port. Without `mqtt_host` the app keeps using the Mosquitto app's broker without TLS, and the log says `mqtt_ssl` was ignored (#54).
+- The unused `mqtt_protocol` option is gone. The app always uses MQTT 5, as it already did (#54).
+
+## 1.0.33
+
+- When the Bluetooth link to the node drops and the add-on is still stuck reconnecting 10 minutes later, it now rebuilds the connection from scratch. That safety net never actually ran before. It was also meant to fire after 60 seconds, which is shorter than the add-on's ordinary reconnect attempts, so it would have interrupted connections that were about to recover (#49).
+- Rebuilding the connection no longer cuts the old connection's clean-up short (#49).
+
 ## 1.0.32
 
 - If the RV is out of range or powered off when the add-on starts, the add-on now keeps trying to connect and creates no entities until it has really connected. Before, it created a placeholder device named "Disconnected", and the next good start added a second, real device with a duplicate of every entity (#48).
