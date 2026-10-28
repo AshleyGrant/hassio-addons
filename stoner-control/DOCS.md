@@ -197,9 +197,12 @@ The bridge keeps itself connected without an add-on restart:
   Reconnect**, the add-on reconnects to the node, and the existing HA entities
   start updating again once it is back. The *BLE Connected* sensor shows the
   gap.
-- **MQTT broker.** If the broker goes away (for example while the Mosquitto
-  add-on updates), the bridge retries every few seconds, backing off to once a
-  minute. When the broker returns, the bridge restores its subscriptions,
+- **MQTT broker.** The add-on connects to the broker before the vehicle, so
+  once Home Assistant has the add-on's entities (after its first connection
+  to the RV), *BLE Connected* shows off while it waits for the RV. If it can't find a broker yet (for example while the Mosquitto app is
+  still starting), it logs why and keeps looking instead of stopping. If the
+  broker goes away (for example while the Mosquitto add-on updates), the bridge
+  retries every few seconds, backing off to once a minute. When the broker returns, the bridge restores its subscriptions,
   finishes any entity discovery that was cut off, and re-reads the vehicle's
   state so Home Assistant catches up on anything that changed in the meantime.
 - **Shutdown.** When the add-on stops it publishes `offline` to
