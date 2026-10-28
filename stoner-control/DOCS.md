@@ -178,6 +178,28 @@ Assistant shows it as On or Off.
 Everything is auto-discovered: as soon as the app connects and downloads
 the vehicle's `app.json`, HA will populate the entities.
 
+### Availability
+
+Home Assistant shows an entity as unavailable, rather than its last value,
+when the app can't reach what it reports on:
+
+- **The vehicle's entities** (every table above except *Vehicle
+  configuration* and *Diagnostics & control*) are unavailable while the app is stopped or has lost
+  the MQTT broker, and while the Bluetooth link to the RV is down or
+  reconnecting. After a reconnect they come back once the app has read the
+  node again and can send it commands, a few seconds after *BLE Connected*
+  turns on.
+- **The vehicle configuration and diagnostics entities** are unavailable only
+  while the app is stopped or has lost the broker. They work without the
+  Bluetooth link, so *BLE Connected* shows off and **Force BLE Reconnect**
+  can still be pressed while the RV is out of reach.
+
+The app publishes `online` or `offline`, retained, to two topics:
+`<base topic>/availability` for itself (the broker publishes `offline` there
+if the app dies without disconnecting), and `<base topic>/ble/availability`
+for the vehicle, which is `online` once the Bluetooth link is up and the app
+is ready to send commands over it.
+
 ## Connection recovery
 
 The bridge keeps itself connected without an add-on restart:
@@ -195,8 +217,8 @@ The bridge keeps itself connected without an add-on restart:
   don't use from its device page in Home Assistant.
 - **Vehicle link.** When the Bluetooth link drops, or you press **Force BLE
   Reconnect**, the add-on reconnects to the node, and the existing HA entities
-  start updating again once it is back. The *BLE Connected* sensor shows the
-  gap.
+  start updating again once it is back. Until then the vehicle's entities are
+  unavailable, and the *BLE Connected* sensor shows the gap.
 - **MQTT broker.** The add-on connects to the broker before the vehicle, so
   once Home Assistant has the add-on's entities (after its first connection
   to the RV), *BLE Connected* shows off while it waits for the RV. If it can't find a broker yet (for example while the Mosquitto app is
@@ -206,7 +228,7 @@ The bridge keeps itself connected without an add-on restart:
   finishes any entity discovery that was cut off, and re-reads the vehicle's
   state so Home Assistant catches up on anything that changed in the meantime.
 - **Shutdown.** When the add-on stops it publishes `offline` to
-  `<base topic>/availability`.
+  `<base topic>/availability`, so all of its entities show as unavailable.
 
 ## The app's image
 

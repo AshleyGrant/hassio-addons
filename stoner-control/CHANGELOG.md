@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.38
+
+- Home Assistant now shows the add-on's entities as unavailable, instead of their last values, while the add-on is stopped or has lost the MQTT broker. The vehicle's entities are also unavailable while the Bluetooth link to the RV is down or reconnecting. *BLE Connected*, the Firebase timestamps, the vehicle configuration entities and the two Force buttons stay available, so you can still press **Force BLE Reconnect** (#52).
+
+## 1.0.37
+
+- With Firebase cloud mirroring on, a Bluetooth outage no longer counts as a stalled cloud publish. Before, every outage longer than 45 seconds tore down the cloud session and signed in to Firebase again, about every 50 seconds, with misleading "stall" warnings (#51).
+- A real stall now keeps the signed-in cloud session and only restarts the publishing and the remote-command listeners. Five stalls in a row without a successful publish rebuild the Bluetooth connection, as intended; before, the count never got past one (#51).
+
 ## 1.0.36
 
 - The add-on connects to the MQTT broker before the vehicle. While the RV is out of reach, *BLE Connected* now shows Off within a few seconds of start-up, instead of keeping whatever it showed when the add-on last stopped (#53).
