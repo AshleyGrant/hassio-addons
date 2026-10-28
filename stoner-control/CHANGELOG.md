@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.40
+
+- With Firebase cloud mirroring on, the add-on stops cleanly. Before, stopping, restarting or updating it hung until Supervisor killed it after 10 seconds, and the app page then showed an error (#148).
+- With Firebase cloud mirroring on, the add-on reconnects to the RV after the Bluetooth link drops, or after **Force BLE Reconnect**. Before, the same hang most likely kept it from ever reconnecting until it was restarted (#148).
+- Each disconnect now logs how long tearing the connection down took (#148).
+
+## 1.0.39
+
+- With Firebase cloud mirroring on, the add-on listens for remote commands only on the collection the apps write them to. The second listener it opened, which Firebase always refused, logged a *PermissionDenied* warning every time it started and was restarted straight away. Now a refused listener is logged once and left stopped. A listener that fails again straight after restarting waits longer each time, up to a minute, and one that ends without an error waits before restarting too (#59).
+
 ## 1.0.38
 
 - Home Assistant now shows the add-on's entities as unavailable, instead of their last values, while the add-on is stopped or has lost the MQTT broker. The vehicle's entities are also unavailable while the Bluetooth link to the RV is down or reconnecting. *BLE Connected*, the Firebase timestamps, the vehicle configuration entities and the two Force buttons stay available, so you can still press **Force BLE Reconnect** (#52).
