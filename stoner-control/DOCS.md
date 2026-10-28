@@ -44,11 +44,10 @@ that the node was not in pairing mode when the app tried to connect.
 | `mqtt_discovery_prefix`    | `homeassistant`    | Override the MQTT discovery prefix if your HA install uses a non-default value. |
 | `mqtt_base_topic`          | `stoner-control`   | Base topic used for state and command messages (e.g. `stoner-control/light/awning/state`). |
 | `mqtt_host`                | *(auto-detected)*  | Optional explicit MQTT broker host. When omitted the app uses the broker advertised by the Supervisor service-discovery API. |
-| `mqtt_port`                | *(auto-detected)*  | Optional explicit MQTT broker port (1–65535). Defaults to the broker's advertised port, typically `1883`. |
+| `mqtt_port`                | *(auto-detected)*  | Optional explicit MQTT broker port (1–65535). Defaults to the broker's advertised port, typically `1883`. With `mqtt_host` and `mqtt_ssl` set, defaults to `8883`. |
 | `mqtt_username`            | *(auto-detected)*  | Optional explicit MQTT username override. |
 | `mqtt_password`            | *(auto-detected)*  | Optional explicit MQTT password override. |
-| `mqtt_ssl`                 | *(auto-detected)*  | When `true` the MQTT connection uses TLS. When omitted the app uses the broker's advertised TLS setting from Supervisor. |
-| `mqtt_protocol`            | *(auto-detected)*  | MQTT protocol version (e.g. `"3.1.1"`, `"5"`). When omitted the app uses the broker's advertised protocol from Supervisor. |
+| `mqtt_ssl`                 | `false`            | For an external broker set with `mqtt_host`: when `true` the app connects to it over TLS, on port `8883` unless `mqtt_port` is set. The broker's certificate must be trusted and must match `mqtt_host`. Without `mqtt_host` the app uses the Mosquitto app's internal broker, which it reaches without TLS, so `mqtt_ssl` is ignored and the log says so. |
 | `firebase_username`        | *(empty)*          | Optional BMPro Firebase account e-mail. When set together with `firebase_password`, the app mirrors live BLE state back into the BMPro cloud document and relays fresh Firebase commands to the RV over Bluetooth. |
 | `firebase_password`        | *(empty)*          | Password for the BMPro Firebase account used for cloud mirroring and command relay. |
 | `firebase_project_id`      | `setec-bmpro-prod` | Firebase project ID for the BMPro cloud environment. Override only if BMPro changes environments. |
@@ -59,8 +58,7 @@ that the node was not in pairing mode when the app tried to connect.
 Only `device_identifier`, `mqtt_discovery_prefix`, `mqtt_base_topic` and
 `log_level` appear on the app's **Configuration** tab by default. To set any
 other option, turn on **Show unused optional configuration options**. An
-option left unset uses the default shown in the table. `mqtt_ssl` and
-`mqtt_protocol` can't be set from the Configuration tab yet (#54).
+option left unset uses the default shown in the table.
 
 MQTT broker credentials are obtained automatically from the Supervisor when
 the official Mosquitto app is installed; no manual broker config is needed
@@ -153,7 +151,11 @@ line that drives the generator's start or stop input.
 | -------------------------------- | ---------------------------- |
 | System overvoltage               | `binary_sensor` (problem)    |
 | Motor controls disabled          | `binary_sensor` (problem)    |
-| Slideout lockout                 | `binary_sensor` (lock)       |
+| Slideout lockout                 | `binary_sensor` (on/off)     |
+
+*Slideout Lockout* is on while the node locks out the slide-outs, which on a
+trailer is while it's hitched for towing. It has no device class, so Home
+Assistant shows it as On or Off.
 
 ### Vehicle configuration
 
