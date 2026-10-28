@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.32
+
+- If the RV is out of range or powered off when the add-on starts, the add-on now keeps trying to connect and creates no entities until it has really connected. Before, it created a placeholder device named "Disconnected", and the next good start added a second, real device with a duplicate of every entity (#48).
+- The add-on deletes that placeholder "Disconnected" device, and its entities, the first time it connects. Your real device and its entities are left alone (#48).
+
 ## 1.0.31
 
 - The app's image now carries the standard source, licence (MIT) and title labels. The source label links its GitHub Container Registry packages to this repository however they are pushed, and the package page shows the licence. The images are public, so pulling them needs no login (#115).
