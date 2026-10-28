@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.43
+
+- With Firebase cloud mirroring on, a wrong e-mail address or password is reported once, with the reason, and cloud mirroring stays off until the app restarts. The same happens if the password changes or the account is disabled while the app runs. Before, the app retried the sign-in every few minutes for as long as it ran, which could get the account locked (#63).
+- With Firebase cloud mirroring on, the cloud sign-in token is refreshed once when it nears expiry, instead of by each part of the mirror at the same time (#60).
+
+## 1.0.42
+
+- Internal: the Firebase sign-in and token refresh used by the cloud transport move into one shared class, which the add-on's cloud mirror will use next. No change in behaviour (#63).
+
+## 1.0.41
+
+- When the Bluetooth link drops, light dimming and climate setpoint changes still waiting to be sent are dropped at once, instead of each failing against the lost connection with a *worker failed* warning (#57).
+- A dropped connection is logged under the vehicle's name, and a connection attempt that fails while the RV is out of reach is no longer also logged as "Connection to Disconnected lost." (#57).
+
 ## 1.0.40
 
 - With Firebase cloud mirroring on, the add-on stops cleanly. Before, stopping, restarting or updating it hung until Supervisor killed it after 10 seconds, and the app page then showed an error (#148).

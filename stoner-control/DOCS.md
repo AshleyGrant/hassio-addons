@@ -72,6 +72,12 @@ Existing command documents are skipped on relay startup and commands older than
 the BMPro remote-command freshness window are discarded. Firebase is never used
 as the source of truth for current state.
 
+If the BMPro cloud refuses the e-mail address or password, the app logs an
+error saying why and turns cloud mirroring off until it restarts, rather than
+trying again, which could get the account locked. Correct `firebase_username`
+or `firebase_password`, save the options, and restart the app when Home
+Assistant offers to. Bluetooth control and Home Assistant carry on either way.
+
 ## What gets exposed
 
 ### Lighting
