@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.47
+
+- With Firebase cloud mirroring on, a cloud that is limiting sign-ins (too many attempts, or a quota used up) is waited out. The app logs a warning and makes no sign-in attempt for 5 minutes, doubling each time the cloud refuses again up to 30 minutes, and mirroring resumes on its own. Before, it signed in again after 5 seconds, then 10, and so on, and on every new Bluetooth connection, each attempt extending the lockout (#66).
+- A cloud refusal of the e-mail address or password is recognised when the cloud adds an explanation after its error code. Before, such a refusal was retried like a passing failure instead of turning cloud mirroring off (#66).
+
 ## 1.0.46
 
 - The app is MIT licensed, and its assemblies carry the owner's copyright. Its documentation uses the app's name and points at the repository installs come from (#56).

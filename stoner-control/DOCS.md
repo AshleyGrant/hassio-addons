@@ -79,6 +79,14 @@ trying again, which could get the account locked. Correct `firebase_username`
 or `firebase_password`, save the options, and restart the app when Home
 Assistant offers to. Bluetooth control and Home Assistant carry on either way.
 
+If the BMPro cloud is limiting sign-ins instead (after too many attempts, or
+when a quota runs out), the app logs a warning and makes no further sign-in
+attempt for 5 minutes, since each one could extend the lockout. The wait
+doubles each time the cloud refuses again, up to 30 minutes, or longer if the
+cloud asks for it, and it starts again from 5 minutes after a sign-in
+succeeds. Cloud mirroring and remote commands resume on their own afterwards;
+nothing needs changing.
+
 ## What gets exposed
 
 ### Lighting
