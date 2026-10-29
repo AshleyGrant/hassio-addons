@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.48
+
+- From this version on, stopping, updating or restarting the app no longer logs a warning that watching for Bluetooth service restarts failed. The update to 1.0.48 itself still shows it once, because Home Assistant stops the previous version to update. The watch simply ends with the connection, and that is now logged at debug level; a watch that fails for any other reason is still a warning (#159).
+- Internal: an unused cloud option is removed from the Firebase mirror's settings. No change in behaviour (#67).
+
 ## 1.0.47
 
 - With Firebase cloud mirroring on, a cloud that is limiting sign-ins (too many attempts, or a quota used up) is waited out. The app logs a warning and makes no sign-in attempt for 5 minutes, doubling each time the cloud refuses again up to 30 minutes, and mirroring resumes on its own. Before, it signed in again after 5 seconds, then 10, and so on, and on every new Bluetooth connection, each attempt extending the lockout (#66).
