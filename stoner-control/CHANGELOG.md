@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.46
+
+- The app is MIT licensed, and its assemblies carry the owner's copyright. Its documentation uses the app's name and points at the repository installs come from (#56).
+- The changelog now covers 1.0.1 to 1.0.11 (#56).
+
+## 1.0.45
+
+- With Firebase cloud mirroring on, the cloud now stamps the time on the state the app writes, and remote commands are judged by the cloud's clock. Before, a Home Assistant clock more than 30 seconds out made the apps show the RV as offline, and made the app drop valid commands or relay stale ones (#62).
+- Remote commands more than 10 seconds old are discarded, as the BMPro gateway does. Before, the limit was 30 seconds (#62).
+
+## 1.0.44
+
+- With Firebase cloud mirroring on, a publish the cloud refuses now counts as failed. Before, it was logged and treated as published, so *Last Successful Firebase Publish* kept advancing while the apps saw stale state (#61).
+- A token the cloud rejects is refreshed before the next request, instead of being sent until it expires on its own up to 55 minutes later. A publish refused because of the session (its token, or the document it writes) is retried a second later, and after five in a row the app signs in to the cloud again; remote commands pause while it waits to retry. Other failures, such as the cloud being busy or unavailable, are retried with the regular heartbeat and leave remote commands running (#61).
+
 ## 1.0.43
 
 - With Firebase cloud mirroring on, a wrong e-mail address or password is reported once, with the reason, and cloud mirroring stays off until the app restarts. The same happens if the password changes or the account is disabled while the app runs. Before, the app retried the sign-in every few minutes for as long as it ran, which could get the account locked (#63).
@@ -151,6 +166,57 @@
 
 - A standby connection is configured with the vehicle's climate zone count before its first status refresh.
 - Reconnect timing counts planned retry delays instead of wall-clock time.
+
+## 1.0.11
+
+- A climate zone that reports an unknown fan speed is sent High, the default, and Home Assistant shows High rather than an unknown speed.
+- Internal: the shared cloud transport reads Firebase errors and timestamps more carefully. The bridge's own cloud mirror is unchanged.
+
+## 1.0.10
+
+- Status refreshes are answered from one that has just finished instead of starting another, and each Bluetooth service's characteristics are looked up once per connection.
+
+## 1.0.9
+
+- A Bluetooth link that is already up is reused instead of being rebuilt.
+- The version banner at start-up is framed so it stands out in the log.
+
+## 1.0.8
+
+- The add-on leaves the node's Bluetooth pairing alone when the host has no key for it.
+
+## 1.0.7
+
+- Concurrent status refreshes are combined into one.
+- The add-on logs its version when it starts.
+
+## 1.0.6
+
+- Connecting uses the host's Bluetooth link directly, which is quicker.
+
+## 1.0.5
+
+- A node that is already bonded to the host can be connected to.
+
+## 1.0.4
+
+- The add-on waits for the node to settle after BlueZ rediscovers it, before connecting.
+- Status refresh counts come from the cached vehicle profile before the first connection, so the first refresh asks for the right number of zones.
+
+## 1.0.3
+
+- Downloading the vehicle configuration (`app.json`) is quicker: each chunk request now fits in one Bluetooth write instead of three.
+
+## 1.0.2
+
+- More reliable pairing and connection on Linux: a refused bond is recognised, stale Bluetooth state is cleared at most once per run instead of on every connect, and the add-on waits for BlueZ to rediscover the node instead of a fixed delay, saying so if it doesn't reappear.
+- A connection that is still reconnecting no longer fails the vehicle's configuration, and the first status refresh asks for at most five climate zones when none are configured.
+- After a Bluetooth drop, the add-on reconnects. Before, every attempt failed with an `ObjectDisposedException` until the add-on was restarted (#6).
+- A reconnect's first status refresh uses the vehicle's cached climate zone and generator counts.
+
+## 1.0.1
+
+- Water tank levels update as the node reports them.
 
 ## 1.0.0
 

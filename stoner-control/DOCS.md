@@ -1,4 +1,4 @@
-# BMPro RV Controller Bridge
+# Stoner Control RV Controller Bridge
 
 Bridges a compatible BMPro control node to Home Assistant via MQTT
 discovery. Exposes lights (including dimmable lights), climate/HVAC zones,
@@ -68,9 +68,10 @@ If Firebase credentials are configured, the app signs in to the BMPro cloud
 and behaves as a local gateway. It publishes live BLE light/climate state back to
 Firestore while the RV is connected over Bluetooth, polls the vehicle command
 subcollection, and relays fresh supported command documents to the RV over BLE.
-Existing command documents are skipped on relay startup and commands older than
-the BMPro remote-command freshness window are discarded. Firebase is never used
-as the source of truth for current state.
+Commands more than 10 seconds old are discarded, as the BMPro gateway does.
+Their age, and the `serverTimestamp` the app writes with the state, come from
+the cloud's clock, so the Home Assistant host's clock doesn't need to be right.
+Firebase is never used as the source of truth for current state.
 
 If the BMPro cloud refuses the e-mail address or password, the app logs an
 error saying why and turns cloud mirroring off until it restarts, rather than
