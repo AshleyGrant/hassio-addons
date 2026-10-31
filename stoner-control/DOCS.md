@@ -95,7 +95,7 @@ nothing needs changing.
 | -------------------------------- | ---------------------------- |
 | On/off lights                    | `light` (no brightness)      |
 | Dimmable lights                  | `light` (with `brightness`)  |
-| All-interior-lights special cmd  | `switch` (`All Lights`)      |
+| All-lights special command       | `switch` (`All Lights`)      |
 
 ### Climate
 

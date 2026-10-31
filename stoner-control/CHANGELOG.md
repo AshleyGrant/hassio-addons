@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.49
+
+- Internal: updated libraries. Polly, which times the reconnect retries, is now 8.9.0, with builds for current .NET versions. Tmds.DBus, under the Bluetooth connection on Linux, is now 0.95.2, a packaging-only release. No change in behaviour is expected.
+
 ## 1.0.48
 
 - From this version on, stopping, updating or restarting the app no longer logs a warning that watching for Bluetooth service restarts failed. The update to 1.0.48 itself still shows it once, because Home Assistant stops the previous version to update. The watch simply ends with the connection, and that is now logged at debug level; a watch that fails for any other reason is still a warning (#159).
