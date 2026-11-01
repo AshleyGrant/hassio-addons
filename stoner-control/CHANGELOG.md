@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.52
+
+- With Firebase cloud mirroring on, a state update the cloud refuses because it's busy (HTTP 429 or 503) is now followed by a wait before the next one: 2 seconds, doubling each time the cloud refuses again, up to 10 seconds. The app goes back to its usual pace once an update gets through. Before, it wrote again a second later, which is what the cloud's refusal asks clients not to do. Each refusal logs a warning with the wait (#228).
+- Any other failed state update, such as a network error, a timeout or another server error, is now sent again on the next pass, about a second later. Before, if nothing on the RV changed, it reached the cloud only with the next heartbeat, up to 10 seconds later, so the log's "will retry on next cycle" wasn't true (#228).
+
 ## 1.0.51
 
 - With Firebase cloud mirroring on, the app no longer misses the RV's state when the first status reaches it just as mirroring starts. Before, if the RV then sent nothing new, the app published nothing to the cloud for that connection, not even its heartbeat, so the apps' Cloud mode showed the RV as offline until something on the RV changed (#252).

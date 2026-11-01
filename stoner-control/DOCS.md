@@ -87,6 +87,16 @@ cloud asks for it, and it starts again from 5 minutes after a sign-in
 succeeds. Cloud mirroring and remote commands resume on their own afterwards;
 nothing needs changing.
 
+If the cloud turns a state update away because it's busy (HTTP 429 or 503),
+the app logs a warning and waits 2 seconds before its next update. The wait
+doubles each time the cloud refuses again, up to 10 seconds, and the app goes
+back to its usual pace once an update gets through. Each update carries the
+whole current state, so nothing is lost while it waits, and the wait doesn't
+pause the relay of remote commands. Any other failed update, such as a network
+error or a timeout, is tried again about a second later. If the cloud refuses
+five updates in a row for the app's session (HTTP 401, 403 or 404), the app
+signs in again after a short wait, and relays no remote commands until it has.
+
 ## What gets exposed
 
 ### Lighting
