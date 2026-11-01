@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.54
+
+- Internal: closing a connection is sturdier. If a disconnect fails or is cancelled, the app still releases the rest of that connection and finishes closing down, instead of stopping at the first failure. No change you'd notice in normal use: the Bluetooth disconnect already logged its own failures rather than throwing them (#275).
+
 ## 1.0.53
 
 - Bluetooth failures that used to vanish are now logged at debug level, with the reason. You'll see them only with `log_level: debug`. That covers a failed liveness check (with its count, "1/2"), a GATT service whose characteristics couldn't be listed, a skipped service during the configuration download, and a node identity field (the RV's OEM serial, manufacturer, model or revisions) that couldn't be read. Such a field still reads as empty, as before. Once whatever asked for an identity read, a GATT lookup or a configuration lookup is cancelled (the app stopping, or a connection torn down), a failure there is no longer skipped past: it goes up to the caller instead (#89).
