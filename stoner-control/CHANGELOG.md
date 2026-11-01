@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.51
+
+- With Firebase cloud mirroring on, the app no longer misses the RV's state when the first status reaches it just as mirroring starts. Before, if the RV then sent nothing new, the app published nothing to the cloud for that connection, not even its heartbeat, so the apps' Cloud mode showed the RV as offline until something on the RV changed (#252).
+- Internal: the live vehicle status store moves out of the shared contracts library into its own, and the app depends on it through an interface (#78). Unused code is removed: an MQTT transport kind the app never used (#68), and a list of Bluetooth services that only the deleted Web Bluetooth project used (#69). The app's own MQTT connection to Home Assistant is unchanged. Package pins that changed nothing are dropped (#83). No change in behaviour.
+
 ## 1.0.50
 
 - The app now reads the RV's configuration with the same rules as the Stoner Control apps, so all of them show the same devices (#71). Every sample configuration, the 425FO among them, gives the same entities as before. Only an unusual file reads differently. An item with no index is skipped, and a field of the wrong type is treated as missing; before, the item became index 0, or the whole file was refused. A temperature sensor's `analogIndex` is now read. A property name spelled with different capitals is now ignored. A file that repeats a key is now refused, so the app connects but publishes no entities for it.
