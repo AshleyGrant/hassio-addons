@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.53
+
+- Bluetooth failures that used to vanish are now logged at debug level, with the reason. You'll see them only with `log_level: debug`. That covers a failed liveness check (with its count, "1/2"), a GATT service whose characteristics couldn't be listed, a skipped service during the configuration download, and a node identity field (the RV's OEM serial, manufacturer, model or revisions) that couldn't be read. Such a field still reads as empty, as before. Once whatever asked for an identity read, a GATT lookup or a configuration lookup is cancelled (the app stopping, or a connection torn down), a failure there is no longer skipped past: it goes up to the caller instead (#89).
+- Internal: the app's constructors now reject a missing argument at once, instead of failing later somewhere unrelated (#89). A time seam in the configuration download's reader makes its retry tests deterministic (#258). Neither changes behaviour. A connection teardown that fails to close the connection, past what the Bluetooth layer already logs at debug, now logs a warning instead of dropping it (#89).
+
 ## 1.0.52
 
 - With Firebase cloud mirroring on, a state update the cloud refuses because it's busy (HTTP 429 or 503) is now followed by a wait before the next one: 2 seconds, doubling each time the cloud refuses again, up to 10 seconds. The app goes back to its usual pace once an update gets through. Before, it wrote again a second later, which is what the cloud's refusal asks clients not to do. Each refusal logs a warning with the wait (#228).
