@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.59
+
+- Fixed a cloud stall that wasn't always counted. When updates to the cloud stop getting through, the app restarts its Firebase session, and after five such stalls in a row it also rebuilds the Bluetooth connection. If the stuck update finished just as the app stepped in, the stall was treated as an ordinary failure instead: the app signed in to Firebase again and didn't count it toward the five. It now always counts, and the extra sign-in is gone (#332).
+- Fixed two mistakes in how the app retries its Bluetooth connection:
+  - When the Bluetooth link dropped just after connecting, the connect gave up with a fault even though a reconnect was about to start. The app logged "The vehicle connection ended Faulted instead of connecting", waited 15 seconds and rebuilt the whole connection. It now waits for that reconnect instead (#319).
+  - A connection attempt that was stopped, then failed late, was logged as having "exhausted all retry attempts". It's now logged at debug level, and that warning means only that the retries really ran out (#320).
+- Internal: the shared connection layer now reports Connecting, not Connected, when one of two connections drops while the other is still connecting. This app uses only Bluetooth, so nothing changes here (#318).
+- Internal: the Bluetooth transport, device discovery and the Linux (BlueZ) Bluetooth layer now reach InTheHand and D-Bus through small interfaces, so their connect, scan, pairing and recovery logic can be unit tested without hardware. The authentication cipher's code is split into two methods, with the same choice between them. Two unused setters in the device catalog are removed. Saving a configuration archive straight to a file now leaves the document marked as changed when the save fails; nothing in the apps saves that way yet. None of this changes how the app behaves (#286, #288, #294, #297).
+
 ## 1.0.58
 
 - Internal: the code that relays commands from the cloud to the RV now reaches Firebase's live listener through a small interface, so its checks (how old a command may be, which of two commands for the same light or zone wins, waiting for Bluetooth, not relaying a command twice) can be tested without Firebase. Three helpers nothing used are removed. Nothing changes in how commands are relayed (#290).
