@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.57
+
+- Internal: the app's start-up setup (log level, services, Bluetooth device and retry settings) moved into its own class, and the options loader can now be tested without Supervisor, for the unit test coverage work (#290). Nothing changes in how the app starts or behaves.
+
 ## 1.0.56
 
 - Internal: shared cloud code changed for the phone app, which no longer reports the cloud as stale just after Android wakes it (#280). Nothing changes in this app.
