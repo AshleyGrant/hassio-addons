@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.55
+
+- The app now re-reads every status from the RV every 10 seconds while connected, as well as reporting the changes the node sends. A missed update now corrects itself within 10 seconds, in Home Assistant and in the cloud. Commands still go first: a refresh waits while dimming or setpoint changes are being sent, and otherwise holds a command up for no more than the read in progress (#279).
+- Fixed the cloud showing lights as off when they were on. After a reconnect, the app could miss the light states its first status read sent, and kept reporting those lights as off in the cloud until they changed. Home Assistant only looked right because it still had the values from before the reconnect (#279).
+
 ## 1.0.54
 
 - Internal: closing a connection is sturdier. If a disconnect fails or is cancelled, the app still releases the rest of that connection and finishes closing down, instead of stopping at the first failure. No change you'd notice in normal use: the Bluetooth disconnect already logged its own failures rather than throwing them (#275).

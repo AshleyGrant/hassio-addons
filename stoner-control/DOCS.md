@@ -203,6 +203,11 @@ Assistant shows it as On or Off.
 Everything is auto-discovered: as soon as the app connects and downloads
 the vehicle's `app.json`, HA will populate the entities.
 
+While connected, the app re-reads every status from the node every 10
+seconds, as well as reporting changes the node sends. A missed update
+corrects itself within 10 seconds, in Home Assistant and in the cloud.
+*Force status refresh* asks for the same read at once; within a few seconds of the last one, it resends what that read found instead of reading again.
+
 ### Availability
 
 Home Assistant shows an entity as unavailable, rather than its last value,
