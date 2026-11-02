@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.58
+
+- Internal: the code that relays commands from the cloud to the RV now reaches Firebase's live listener through a small interface, so its checks (how old a command may be, which of two commands for the same light or zone wins, waiting for Bluetooth, not relaying a command twice) can be tested without Firebase. Three helpers nothing used are removed. Nothing changes in how commands are relayed (#290).
+
 ## 1.0.57
 
 - Internal: the app's start-up setup (log level, services, Bluetooth device and retry settings) moved into its own class, and the options loader can now be tested without Supervisor, for the unit test coverage work (#290). Nothing changes in how the app starts or behaves.
