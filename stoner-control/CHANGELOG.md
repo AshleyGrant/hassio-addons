@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.56
+
+- Internal: shared cloud code changed for the phone app, which no longer reports the cloud as stale just after Android wakes it (#280). Nothing changes in this app.
+
 ## 1.0.55
 
 - The app now re-reads every status from the RV every 10 seconds while connected, as well as reporting the changes the node sends. A missed update now corrects itself within 10 seconds, in Home Assistant and in the cloud. Commands still go first: a refresh waits while dimming or setpoint changes are being sent, and otherwise holds a command up for no more than the read in progress (#279).
