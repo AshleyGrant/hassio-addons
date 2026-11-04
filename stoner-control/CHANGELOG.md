@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.61
+
+- Fixed dimming levels at 30% and 70%. The bridge rounded those two levels down where the BMPro app rounds them up, so it wrote one step less than the app (19660 instead of 19661, and 45874 instead of 45875, out of 65535). You won't see the difference on a light, but the commands now match the app's exactly (#370).
+
+## 1.0.60
+
+- Internal: the Linux (BlueZ) Bluetooth layer no longer checks at every log line whether it was given somewhere to log. When it has none, it now logs to a sink that discards everything, so its unit tests no longer need a second copy of each scenario without a log. Nothing changes in how the app behaves (#368).
+
 ## 1.0.59
 
 - Fixed a cloud stall that wasn't always counted. When updates to the cloud stop getting through, the app restarts its Firebase session, and after five such stalls in a row it also rebuilds the Bluetooth connection. If the stuck update finished just as the app stepped in, the stall was treated as an ordinary failure instead: the app signed in to Firebase again and didn't count it toward the five. It now always counts, and the extra sign-in is gone (#332).
