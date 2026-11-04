@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.62
+
+- Internal: the default Firebase web API key is now stored Base64-encoded in the source, so the plain key no longer appears in the source. The app decodes it at start-up and signs in with the same key as before, and a `firebase_api_key` you set yourself still takes precedence. Nothing changes in how the app behaves.
+
 ## 1.0.61
 
 - Fixed dimming levels at 30% and 70%. The bridge rounded those two levels down where the BMPro app rounds them up, so it wrote one step less than the app (19660 instead of 19661, and 45874 instead of 45875, out of 65535). You won't see the difference on a light, but the commands now match the app's exactly (#370).
