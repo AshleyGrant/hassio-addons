@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.63
+
+- Fixed stopping the app while it reads the node's serial number or firmware version. A serial read carried on to the next source and could return the serial from the advertised name, or none at all, which could log a false "no serial number" message on the way out. A firmware read could log a false warning and report the version as unknown. A read that has started can't be interrupted, so a stop still waits for it to end, but the app now stops there instead of moving on. If you haven't stopped the app, a read that fails or times out still moves on to the next source (#389).
+- Fixed stopping the app while it downloads the RV's profile (`app.json`). A download that ended because of the stop was treated as a failed one, so the app logged false warnings and looked for its cached copy on the way out. It now just stops. If you haven't stopped the app, a failed download still falls back to the cached copy (#389).
+- Internal: a rejected Bluetooth MTU request is now compared with the MTU that was asked for, so Android Oreo no longer logs a false warning. This doesn't apply to the add-on, and nothing changes in how the app behaves (#389).
+
 ## 1.0.62
 
 - Internal: the default Firebase web API key is now stored Base64-encoded in the source, so the plain key no longer appears in the source. The app decodes it at start-up and signs in with the same key as before, and a `firebase_api_key` you set yourself still takes precedence. Nothing changes in how the app behaves.
