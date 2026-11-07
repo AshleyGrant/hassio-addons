@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.66
+
+- Fixed cloud commands sent together being dropped. Turning a zone on and setting its mode and temperature arrive at the bridge at once, and it could keep the temperature and throw away the on and the mode. They're now relayed in the order they were sent, and a newer command only replaces an older one of the same kind for the same light or zone, so a slider still ends on its last value.
+
 ## 1.0.65
 
 - Fixed `ble_device_id`, and the device the bridge remembers, giving way to any BMPro node nearby. Every connect looked for a node by name alone, so a second coach in range could answer first, and the bridge would have sent Home Assistant's commands to it. A known device is now the only one the bridge will connect to, and it's never replaced.
