@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.65
+
+- Fixed `ble_device_id`, and the device the bridge remembers, giving way to any BMPro node nearby. Every connect looked for a node by name alone, so a second coach in range could answer first, and the bridge would have sent Home Assistant's commands to it. A known device is now the only one the bridge will connect to, and it's never replaced.
+- If you replace your node, set `ble_device_id` to the new node's Bluetooth address, as the old one won't be found. A blank `ble_device_id` counts as no pin, and with no device known, the first connect finds one by name as before.
+- The bridge now records the device each time it finds it, so taking a pin away leaves that device rather than an older one.
+
 ## 1.0.64
 
 - Fixed the All Lights switch in Home Assistant, which only echoed the last command sent to it. It now reads on only when every light is on, so it follows the lights themselves, whether they're changed from Home Assistant, a wall switch or an app, and it comes back correctly after the MQTT broker restarts.
