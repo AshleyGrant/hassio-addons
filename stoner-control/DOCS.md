@@ -107,6 +107,10 @@ signs in again after a short wait, and relays no remote commands until it has.
 | Dimmable lights                  | `light` (with `brightness`)  |
 | All-lights special command       | `switch` (`All Lights`)      |
 
+*All Lights* reads On only while every light is on, whether they were turned on
+from Home Assistant, a wall switch or the apps. With some lights on it reads Off,
+and a tap turns the rest on; with all of them on, a tap turns them all off.
+
 ### Climate
 
 | BMPro concept                    | HA entity                                              |

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.64
+
+- Fixed the All Lights switch in Home Assistant, which only echoed the last command sent to it. It now reads on only when every light is on, so it follows the lights themselves, whether they're changed from Home Assistant, a wall switch or an app, and it comes back correctly after the MQTT broker restarts.
+- The cloud document now carries the temperature sensors and whether the generator supports AGS, so the phone and web apps get a fuller profile over Cloud. Older apps ignore the new fields.
+
 ## 1.0.63
 
 - Fixed stopping the app while it reads the node's serial number or firmware version. A serial read carried on to the next source and could return the serial from the advertised name, or none at all, which could log a false "no serial number" message on the way out. A firmware read could log a false warning and report the version as unknown. A read that has started can't be interrupted, so a stop still waits for it to end, but the app now stops there instead of moving on. If you haven't stopped the app, a read that fails or times out still moves on to the next source (#389).
