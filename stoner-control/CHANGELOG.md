@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.69
+
+- Faulted sensors now reach the phone and web apps as faults over Cloud. A faulted tank showed its last level, or waited forever, and a faulted outside temperature kept its last value.
+- Fixed a Bluetooth subscribe that failed never being tried again. The next attempt said it was already subscribed and skipped the work.
+- The rest of this release is shared code and housekeeping, with no change for you here: the web app no longer saves its Cloud password, and the BLE key is no longer written out in plain text in the source.
+
 ## 1.0.68
 
 - Fixed sensor faults showing as real readings. An open temperature sensor read 128.0 C and a faulted tank sender read over 100 %, and Home Assistant recorded those in its history. A faulted sensor now reads as unknown. If one of your sensors is faulted, it will change to unknown after this update (#399).
