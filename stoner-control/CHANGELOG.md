@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.70
+
+- No change for you here. This release carries shared Cloud code for the Android app, which now keeps a refresh token instead of its password. The add-on still signs in with the password in its options.
+
 ## 1.0.69
 
 - Faulted sensors now reach the phone and web apps as faults over Cloud. A faulted tank showed its last level, or waited forever, and a faulted outside temperature kept its last value.
