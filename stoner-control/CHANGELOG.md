@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.67
+
+- This release changes only the shared Firebase code, for the phone and web apps. The add-on's own Bluetooth and Home Assistant behaviour is the same.
+- Fixed apps showing old readings as current while the RV's gateway was offline. A status refresh could publish a document the apps otherwise withhold (#404).
+- Fixed apps judging the gateway by their own clock. A clock about 30 seconds fast hid all live cloud data, and a slow one showed a stopped gateway as live (#413).
+
 ## 1.0.66
 
 - Fixed cloud commands sent together being dropped. Turning a zone on and setting its mode and temperature arrive at the bridge at once, and it could keep the temperature and throw away the on and the mode. They're now relayed in the order they were sent, and a newer command only replaces an older one of the same kind for the same light or zone, so a slider still ends on its last value.
