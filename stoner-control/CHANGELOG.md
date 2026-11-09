@@ -1,8 +1,14 @@
 # Changelog
 
+## 1.0.68
+
+- Fixed sensor faults showing as real readings. An open temperature sensor read 128.0 C and a faulted tank sender read over 100 %, and Home Assistant recorded those in its history. A faulted sensor now reads as unknown. If one of your sensors is faulted, it will change to unknown after this update (#399).
+- Fixed the Home Assistant device being named "Disconnected", with firmware "unknown", after a Bluetooth drop during the first connection. It lasted until the add-on restarted. A later connection now corrects the name and firmware, and a failed read never replaces a real value. Entity IDs don't change (#414).
+
 ## 1.0.67
 
-- This release changes only the shared Firebase code, for the phone and web apps. The add-on's own Bluetooth and Home Assistant behaviour is the same.
+- Fixed a dim or setpoint being lost when the Bluetooth write before it failed. The newer value is now sent, and the 10-second status re-read no longer stops (#409).
+- The rest of this release is the shared Firebase code, for the phone and web apps:
 - Fixed apps showing old readings as current while the RV's gateway was offline. A status refresh could publish a document the apps otherwise withhold (#404).
 - Fixed apps judging the gateway by their own clock. A clock about 30 seconds fast hid all live cloud data, and a slow one showed a stopped gateway as live (#413).
 
