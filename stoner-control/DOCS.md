@@ -48,15 +48,17 @@ that the node was not in pairing mode when the app tried to connect.
 | `mqtt_username`            | *(auto-detected)*  | Optional explicit MQTT username override. |
 | `mqtt_password`            | *(auto-detected)*  | Optional explicit MQTT password override. |
 | `mqtt_ssl`                 | `false`            | For an external broker set with `mqtt_host`: when `true` the app connects to it over TLS, on port `8883` unless `mqtt_port` is set. The broker's certificate must be trusted and must match `mqtt_host`. Without `mqtt_host` the app uses the Mosquitto app's internal broker, which it reaches without TLS, so `mqtt_ssl` is ignored and the log says so. |
-| `firebase_username`        | *(empty)*          | Optional BMPro Firebase account e-mail. When set together with `firebase_password`, the app mirrors live BLE state back into the BMPro cloud document and relays fresh Firebase commands to the RV over Bluetooth. |
-| `firebase_password`        | *(empty)*          | Password for the BMPro Firebase account used for cloud mirroring and command relay. |
+| `firebase_username`        | *(empty)*          | Optional BMPro account e-mail, the one you use in BMPRO Connect. When set together with `firebase_password`, the app mirrors live BLE state into BMPro's cloud and relays commands from it to the RV over Bluetooth, on the cloud `cloud_backend` chooses. The name predates BMPro's newer cloud; the same account works for both. |
+| `firebase_password`        | *(empty)*          | Password for that BMPro account. |
+| `cloud_backend`            | `firebase`         | Which of BMPro's clouds the app is your RV's gateway on: `firebase`, `appwrite` or `both`. See [Choosing BMPro's cloud](#choosing-bmpros-cloud). |
 | `firebase_project_id`      | `setec-bmpro-prod` | Firebase project ID for the BMPro cloud environment. Override only if BMPro changes environments. |
 | `firebase_api_key`         | *(set by default)*  | Firebase web API key used for email/password sign-in. |
 | `firebase_app_cloud_id`    | `rvm_bmpro_connect` | Firestore app partition used under `apps/{appCloudId}/users/{uid}`. |
 | `log_level`                | `info`             | One of `trace`, `debug`, `info`, `warn`, `error`. |
 
-Only `device_identifier`, `mqtt_discovery_prefix`, `mqtt_base_topic` and
-`log_level` appear on the app's **Configuration** tab by default. To set any
+Only `device_identifier`, `mqtt_discovery_prefix`, `mqtt_base_topic`,
+`cloud_backend` and `log_level` appear on the app's **Configuration** tab by
+default. To set any
 other option, turn on **Show unused optional configuration options**. An
 option left unset uses the default shown in the table.
 
@@ -96,6 +98,45 @@ pause the relay of remote commands. Any other failed update, such as a network
 error or a timeout, is tried again about a second later. If the cloud refuses
 five updates in a row for the app's session (HTTP 401, 403 or 404), the app
 signs in again after a short wait, and relays no remote commands until it has.
+
+### Choosing BMPro's cloud
+
+BMPro is moving its cloud from Firebase to a newer one, Appwrite. Once BMPro
+moves your account, BMPRO Connect and the Stoner Control apps look for your RV
+on Appwrite, so the app has to be its gateway there. `cloud_backend` chooses:
+
+- `firebase` (the default): the app is your RV's gateway on Firebase only, as
+  before. Updating the app changes nothing until you choose another.
+- `appwrite`: the app is your RV's gateway on Appwrite only. The first time,
+  it moves your account across the way BMPRO Connect does, with the same
+  e-mail address and password, and keeps the Appwrite session in the app's
+  `/data` folder, so a restart reuses it. The log says how the move went, for
+  example `Appwrite account ready (Exchanged); connecting the gateway.`
+- `both`: the app is your RV's gateway on both clouds at once, for anything
+  still on Firebase (such as the Stoner Control web app) while your phone uses
+  Appwrite. This doubles the writes the app makes to BMPro's clouds, so use it
+  only while you need it.
+
+If BMPro hasn't moved your account yet, the Appwrite gateway can't start: the
+log says `The Appwrite gateway isn't running yet (NotMigratedYet)`, and the app
+asks again every 30 minutes. With `appwrite` alone your RV is then on no cloud
+at all, so keep `firebase` or `both` until BMPro has moved your account. If
+BMPro is unavailable, the app tries again after 5 minutes, doubling to 30. If
+Firebase and Appwrite both refuse the e-mail address or password, the app logs
+an error and turns the Appwrite gateway off until it restarts, as for Firebase.
+If only Appwrite refuses a password Firebase accepts, the account may still
+need moving or a password reset, so the app logs a warning and asks again every
+30 minutes. In every
+case Bluetooth control and Home Assistant carry on.
+
+On Appwrite, the app keeps BMPro's quiet spells when nobody is watching: after
+90 seconds without a command from any app, it writes only what changed, every
+20 seconds, rather than every second. Opening an app wakes it at once. When the
+app stops cleanly, it tells the apps the RV's gateway is offline.
+
+How the app talks to Appwrite, and why its quiet spells differ from BMPro's
+own gateway, is described in
+[Stoner Control's Appwrite protocol](https://github.com/AshleyGrant/stoner-control/blob/main/documentation/bmpro-appwrite-protocol.md).
 
 ## What gets exposed
 

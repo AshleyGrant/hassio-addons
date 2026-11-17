@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.75
+
+- No change for you here. This release carries shared Cloud code that now says how old the Firestore data is, which the web app uses to tell you when your RV may have moved to BMPro's newer cloud.
+
+## 1.0.74
+
+- No change for you here. The code that builds the RV's catalogue for BMPro's newer cloud moved into the shared Appwrite code, unchanged, so the Android app's automated tests can use it too.
+
+## 1.0.73
+
+- No change for you here. This release carries shared code for the Android app, which now moves your Cloud account to BMPro's newer cloud after an update and says how old Cloud data is.
+
+## 1.0.72
+
+- New `cloud_backend` option: choose which of BMPro's clouds the add-on is your RV's gateway on, `firebase`, `appwrite` or `both`. It defaults to `firebase`, so nothing changes until you choose. With `appwrite` or `both`, the add-on moves your BMPro account to the newer Appwrite cloud the way BMPRO Connect does, using the same e-mail address and password, and keeps the session in `/data`. If BMPro hasn't moved your account yet, it says so in the log and asks again every 30 minutes; keep `firebase` or `both` until then. See the Documentation tab.
+
+## 1.0.71
+
+- No change for you here yet. This release carries the add-on's gateway to BMPro's newer Appwrite cloud: it publishes your RV's state there and relays commands from it, with the same quiet spells as the Firebase mirror when nobody is watching. It stays off until a later release adds the option to choose it, and the add-on keeps using Firebase until then.
+
 ## 1.0.70
 
 - No change for you here. This release carries shared Cloud code for the Android app, which now keeps a refresh token instead of its password. The add-on still signs in with the password in its options.
