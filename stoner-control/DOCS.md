@@ -153,6 +153,24 @@ On Appwrite, the app keeps BMPro's quiet spells when nobody is watching: after
 20 seconds, rather than every second. Opening an app wakes it at once. When the
 app stops cleanly, it tells the apps the RV's gateway is offline.
 
+To see that it's working, look in the log. About once a minute the app writes a
+line like `Appwrite publish loop alive: last write 3s ago, 14 write(s) and 0
+failed publish(es) in the last 60s, dormant, 0 command(s) and 0 pulse(s) handled`,
+with `active` while an app is watching. Pulses are the apps saying they're
+watching; commands are what they ask the RV to do. The line starts only once the
+app is connected to Appwrite. Until then, while it waits to move your account or
+for BMPro to be available, it logs what it's waiting for and how long, at info
+(from 5 minutes up to 30, or longer if Appwrite asks). Once connected, while
+Appwrite is failing and the app is backing off, the line comes less often, only
+when each wait ends. After a failed write that's 5 minutes at most, but when
+Appwrite limits the app's writes it waits as long as Appwrite asks, and a
+throttled sign-in waits out its cool-down of 5 to 30 minutes or longer, so the
+line can be absent for longer. Each of those waits starts with a warning in the
+log that says how long it is. With `log_level: debug` it also logs every request it makes
+to Appwrite, as in `Appwrite PATCH databases/bmpro/collections/vehicle_power/documents/…: 200 in 84 ms`,
+and every Realtime event it receives. No password, session or document contents
+appear in either.
+
 How the app talks to Appwrite, and why its quiet spells differ from BMPro's
 own gateway, is described in
 [Stoner Control's Appwrite protocol](https://github.com/AshleyGrant/stoner-control/blob/main/documentation/bmpro-appwrite-protocol.md).

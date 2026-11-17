@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.78
+
+- On BMPro's newer cloud (Appwrite), the log now shows the app working. Once a minute it writes `Appwrite publish loop alive: …`, with when it last wrote, how many writes and failures it had, whether it's active or dormant, and how many commands and pulses it handled. With `log_level: debug` it also logs every request it makes to Appwrite and every Realtime event it receives. Before, it was silent unless something failed.
+
 ## 1.0.77
 
 - New `cloud_backend` value, `none`: turns BMPro's cloud off, even with your BMPro account set. The add-on then signs in to neither cloud, publishes nothing to them and relays no commands from BMPRO Connect, and the "Last Firebase Publish" and "Last Successful Firebase Publish" sensors are removed when the RV next connects. Bluetooth control and Home Assistant work as before. A saved Appwrite session stays in `/data`, unused. Choosing a cloud again brings the gateway and the sensors back. See the Documentation tab.
