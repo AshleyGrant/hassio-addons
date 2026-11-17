@@ -8,9 +8,10 @@ slide/awning, water tank, voltage source, temperature sensor, water pump,
 line heater, generator, inverter, shore power sensor, and diagnostic entity
 the node knows about appears as native HA entities — no manual YAML required.
 
-Optional Firebase credentials let the app mirror live BLE state back to the
-BMPro cloud and relay fresh BMPro mobile-app commands to the RV over Bluetooth.
-Firebase is not used as the source of truth for current state.
+An optional BMPro account lets the app mirror live BLE state to BMPro's cloud
+(Appwrite by default, or Firebase) and relay fresh BMPro mobile-app commands to
+the RV over Bluetooth. The cloud is not used as the source of truth for current
+state.
 
 See [`DOCS.md`](DOCS.md) for full setup, pairing, and configuration details.
 [`CHANGELOG.md`](CHANGELOG.md) tracks per-release notes.

@@ -50,7 +50,7 @@ that the node was not in pairing mode when the app tried to connect.
 | `mqtt_ssl`                 | `false`            | For an external broker set with `mqtt_host`: when `true` the app connects to it over TLS, on port `8883` unless `mqtt_port` is set. The broker's certificate must be trusted and must match `mqtt_host`. Without `mqtt_host` the app uses the Mosquitto app's internal broker, which it reaches without TLS, so `mqtt_ssl` is ignored and the log says so. |
 | `firebase_username`        | *(empty)*          | Optional BMPro account e-mail, the one you use in BMPRO Connect. When set together with `firebase_password`, the app mirrors live BLE state into BMPro's cloud and relays commands from it to the RV over Bluetooth, on the cloud `cloud_backend` chooses. The name predates BMPro's newer cloud; the same account works for both. |
 | `firebase_password`        | *(empty)*          | Password for that BMPro account. |
-| `cloud_backend`            | `firebase`         | Which of BMPro's clouds the app is your RV's gateway on: `firebase`, `appwrite` or `both`. See [Choosing BMPro's cloud](#choosing-bmpros-cloud). |
+| `cloud_backend`            | `appwrite`         | Which of BMPro's clouds the app is your RV's gateway on: `appwrite`, `firebase` or `both`, or `none` to turn the cloud off even with the account set. See [Choosing BMPro's cloud](#choosing-bmpros-cloud). |
 | `firebase_project_id`      | `setec-bmpro-prod` | Firebase project ID for the BMPro cloud environment. Override only if BMPro changes environments. |
 | `firebase_api_key`         | *(set by default)*  | Firebase web API key used for email/password sign-in. |
 | `firebase_app_cloud_id`    | `rvm_bmpro_connect` | Firestore app partition used under `apps/{appCloudId}/users/{uid}`. |
@@ -66,14 +66,14 @@ MQTT broker credentials are obtained automatically from the Supervisor when
 the official Mosquitto app is installed; no manual broker config is needed
 in the typical case.
 
-If Firebase credentials are configured, the app signs in to the BMPro cloud
-and behaves as a local gateway. It publishes live BLE light/climate state back to
-Firestore while the RV is connected over Bluetooth, polls the vehicle command
-subcollection, and relays fresh supported command documents to the RV over BLE.
-Commands more than 10 seconds old are discarded, as the BMPro gateway does.
-Their age, and the `serverTimestamp` the app writes with the state, come from
-the cloud's clock, so the Home Assistant host's clock doesn't need to be right.
-Firebase is never used as the source of truth for current state.
+If your BMPro account is configured, the app signs in to the BMPro cloud that
+`cloud_backend` chooses (Appwrite by default) and behaves as your RV's gateway
+there. While the RV is connected over Bluetooth it publishes the live BLE
+state to that cloud and relays fresh supported commands from it to the RV over
+BLE. Commands more than 10 seconds old are discarded, as the BMPro gateway does.
+Their age, and on Firebase the `serverTimestamp` the app writes with the state,
+come from the cloud's clock, so the Home Assistant host's clock doesn't need to
+be right. The cloud is never used as the source of truth for current state.
 
 If the BMPro cloud refuses the e-mail address or password, the app logs an
 error saying why and turns cloud mirroring off until it restarts, rather than
@@ -101,26 +101,45 @@ signs in again after a short wait, and relays no remote commands until it has.
 
 ### Choosing BMPro's cloud
 
-BMPro is moving its cloud from Firebase to a newer one, Appwrite. Once BMPro
-moves your account, BMPRO Connect and the Stoner Control apps look for your RV
-on Appwrite, so the app has to be its gateway there. `cloud_backend` chooses:
+BMPro is moving its cloud from Firebase to a newer one, Appwrite. BMPro copies
+accounts across on its own servers: an account checked in November 2026 had
+been copied that September, with the same e-mail address and password. An
+account made later may not be there yet. Once your account is on Appwrite,
+BMPRO Connect and the Stoner Control apps look for your RV on Appwrite, so the
+app has to be its gateway there. `cloud_backend` chooses:
 
-- `firebase` (the default): the app is your RV's gateway on Firebase only, as
-  before. Updating the app changes nothing until you choose another.
-- `appwrite`: the app is your RV's gateway on Appwrite only. The first time,
-  it moves your account across the way BMPRO Connect does, with the same
-  e-mail address and password, and keeps the Appwrite session in the app's
-  `/data` folder, so a restart reuses it. The log says how the move went, for
-  example `Appwrite account ready (Exchanged); connecting the gateway.`
+- `appwrite` (the default): the app is your RV's gateway on Appwrite only,
+  where BMPRO Connect looks. The first time, it signs in to your account there
+  the way BMPRO Connect does, with the same e-mail address and password, and
+  keeps the Appwrite session in the app's `/data` folder, so a restart reuses
+  it. The log says how the move went, for example
+  `Appwrite account ready (Exchanged); connecting the gateway.`
+- `firebase`: the app is your RV's gateway on Firebase only, as before
+  Appwrite.
 - `both`: the app is your RV's gateway on both clouds at once, for anything
   still on Firebase (such as the Stoner Control web app) while your phone uses
   Appwrite. This doubles the writes the app makes to BMPro's clouds, so use it
   only while you need it.
+- `none`: no cloud at all, even with your BMPro account set. The app signs in
+  to neither cloud, publishes nothing to them and relays no commands from
+  BMPRO Connect; Bluetooth control and Home Assistant work as normal. The
+  log says `BMPro's cloud is off (cloud_backend: none)` when the app starts.
+  The "Last Firebase Publish" and "Last Successful Firebase Publish" sensors
+  are removed when the RV next connects, and come back when you choose a cloud
+  again. A saved Appwrite session stays in the app's `/data` folder, unused,
+  and is reused if you choose `appwrite` or `both` again while Appwrite still
+  accepts it.
+  Leaving the e-mail address and password empty also keeps the cloud off, but
+  keeps those two sensors.
+
+With the default, `appwrite`, the Stoner Control web app no longer sees your
+RV, because it reads Firebase only. Choose `both` if you use it. A value you
+have saved for `cloud_backend` is kept across updates.
 
 If BMPro hasn't moved your account yet, the Appwrite gateway can't start: the
 log says `The Appwrite gateway isn't running yet (NotMigratedYet)`, and the app
 asks again every 30 minutes. With `appwrite` alone your RV is then on no cloud
-at all, so keep `firebase` or `both` until BMPro has moved your account. If
+at all, so choose `firebase` or `both` until BMPro has moved your account. If
 BMPro is unavailable, the app tries again after 5 minutes, doubling to 30. If
 Firebase and Appwrite both refuse the e-mail address or password, the app logs
 an error and turns the Appwrite gateway off until it restarts, as for Firebase.
@@ -244,6 +263,9 @@ Assistant shows it as On or Off.
 | Last successful Firebase publish | `sensor` (timestamp)         |
 | Force BLE reconnect              | `button`                     |
 | Force status refresh             | `button`                     |
+
+With `cloud_backend: none` the two Firebase publish sensors are removed when
+the RV next connects, and they come back when you choose a cloud again.
 
 Everything is auto-discovered: as soon as the app connects and downloads
 the vehicle's `app.json`, HA will populate the entities.

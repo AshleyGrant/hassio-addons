@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.77
+
+- New `cloud_backend` value, `none`: turns BMPro's cloud off, even with your BMPro account set. The add-on then signs in to neither cloud, publishes nothing to them and relays no commands from BMPRO Connect, and the "Last Firebase Publish" and "Last Successful Firebase Publish" sensors are removed when the RV next connects. Bluetooth control and Home Assistant work as before. A saved Appwrite session stays in `/data`, unused. Choosing a cloud again brings the gateway and the sensors back. See the Documentation tab.
+
+## 1.0.76
+
+- `cloud_backend` now defaults to `appwrite`, BMPro's newer cloud, where BMPRO Connect looks for your RV. If you never chose a value, the add-on becomes your RV's gateway on Appwrite after this update, and stops publishing to Firebase. The Stoner Control web app reads Firebase only, so choose `both` to keep it working. If BMPro hasn't moved your account to Appwrite yet, choose `firebase` or `both` until it has. A value you have saved for `cloud_backend` is kept. See the Documentation tab.
+
 ## 1.0.75
 
 - No change for you here. This release carries shared Cloud code that now says how old the Firestore data is, which the web app uses to tell you when your RV may have moved to BMPro's newer cloud.
