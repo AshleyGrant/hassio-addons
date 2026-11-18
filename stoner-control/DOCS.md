@@ -157,8 +157,11 @@ To see that it's working, look in the log. About once a minute the app writes a
 line like `Appwrite publish loop alive: last write 3s ago, 14 write(s) and 0
 failed publish(es) in the last 60s, dormant, 0 command(s) and 0 pulse(s) handled`,
 with `active` while an app is watching. Pulses are the apps saying they're
-watching; commands are what they ask the RV to do. The line starts only once the
-app is connected to Appwrite. Until then, while it waits to move your account or
+watching; commands are what they ask the RV to do. Commands that switch lights,
+line heaters or the auto generator on or off are logged one by one too, starting
+with the cloud they came from, as in `Appwrite OnOffCommand relayed: output 23 ->
+ON`; climate zone commands are logged only with `log_level: debug`. The `publish
+loop alive` line starts only once the app is connected to Appwrite. Until then, while it waits to move your account or
 for BMPro to be available, it logs what it's waiting for and how long, at info
 (from 5 minutes up to 30, or longer if Appwrite asks). Once connected, while
 Appwrite is failing and the app is backing off, the line comes less often, only
@@ -168,8 +171,10 @@ throttled sign-in waits out its cool-down of 5 to 30 minutes or longer, so the
 line can be absent for longer. Each of those waits starts with a warning in the
 log that says how long it is. With `log_level: debug` it also logs every request it makes
 to Appwrite, as in `Appwrite PATCH databases/bmpro/collections/vehicle_power/documents/…: 200 in 84 ms`,
-and every Realtime event it receives. No password, session or document contents
-appear in either.
+and every Realtime event it receives. When Appwrite limits a kind of request, its line
+also says how many are left and, when Appwrite says, when the limit resets, as in
+`…: 200 in 84 ms, rate limit 118 of 120 left, resets in 42 s`. No password, session or
+document contents appear in any of them.
 
 How the app talks to Appwrite, and why its quiet spells differ from BMPro's
 own gateway, is described in
@@ -277,10 +282,23 @@ Assistant shows it as On or Off.
 | Concept                          | HA entity                    |
 | -------------------------------- | ---------------------------- |
 | BLE connection status            | `binary_sensor` (connectivity) |
+| Controller firmware              | `sensor` (diagnostic)        |
+| Companion firmware               | `sensor` (diagnostic)        |
+| Panel (RVMC) version             | `sensor` (diagnostic)        |
+| BLE protocol version             | `sensor` (diagnostic)        |
 | Last Firebase publish attempt    | `sensor` (timestamp)         |
 | Last successful Firebase publish | `sensor` (timestamp)         |
 | Force BLE reconnect              | `button`                     |
 | Force status refresh             | `button`                     |
+
+The four version sensors split the control node's software revision, which
+the RV device in Home Assistant shows whole as its firmware, such as
+`1.1.0E3.0C2.1P4.5.0`: the node's controller (`1.1.0`), its companion chip
+(`3.0`), the wall panel, or RVMC (`2.1`), and the node's Bluetooth protocol
+(`4.5.0`). A version the node doesn't report, such as the Bluetooth protocol
+on older firmware, shows as unknown. They update when the add-on next
+connects to the RV, for example after a firmware update. The RV device also
+shows the node's serial number and hardware version.
 
 With `cloud_backend: none` the two Firebase publish sensors are removed when
 the RV next connects, and they come back when you choose a cloud again.

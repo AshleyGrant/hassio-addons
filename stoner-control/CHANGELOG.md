@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.82
+
+- Four new diagnostic sensors on the RV device show the versions packed into your control node's firmware string, which Home Assistant shows whole as the device's firmware: *Controller Firmware*, *Companion Firmware*, *Panel (RVMC) Version* and *BLE Protocol Version*. For `1.1.0E3.0C2.1P4.5.0` they show `1.1.0`, `3.0`, `2.1` and `4.5.0`. A version the node doesn't report shows as unknown (#529).
+- The RV device in Home Assistant now shows the control node's serial number and hardware version, where they were blank before.
+- Nothing changes in the options.
+
+## 1.0.81
+
+- The add-on now publishes your RV control node's serial number and firmware versions to BMPro's newer cloud (Appwrite), where they were blank before, along with the node's hardware revision and, if the RV reports one, the serial number its maker gave the RV. Apps that follow your RV on Appwrite, such as the Stoner Control web app, now get the control node's serial number there too (#526).
+- Nothing changes in the options.
+
+## 1.0.80
+
+- Commands relayed from BMPro's cloud now say in the log which cloud they came from, as in `Appwrite OnOffCommand relayed: output 23 -> ON`. Before, every one said `Firebase`, even with `cloud_backend: appwrite` (#520).
+- Nothing else changes for you. The options, their values and defaults, and your saved Appwrite session in `/data` stay as they are. Inside, the app now signs in to BMPro's clouds through the same shared code as the Android and web apps.
+
+## 1.0.79
+
+- With `log_level: debug`, each Appwrite request that BMPro's cloud limits now also says how many such requests are left and when the limit resets, as in `…: 200 in 84 ms, rate limit 118 of 120 left, resets in 42 s`. Nothing changes at `info`.
+
 ## 1.0.78
 
 - On BMPro's newer cloud (Appwrite), the log now shows the app working. Once a minute it writes `Appwrite publish loop alive: …`, with when it last wrote, how many writes and failures it had, whether it's active or dormant, and how many commands and pulses it handled. With `log_level: debug` it also logs every request it makes to Appwrite and every Realtime event it receives. Before, it was silent unless something failed.
