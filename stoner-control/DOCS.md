@@ -149,15 +149,20 @@ need moving or a password reset, so the app logs a warning and asks again every
 case Bluetooth control and Home Assistant carry on.
 
 On Appwrite, the app keeps BMPro's quiet spells when nobody is watching: after
-90 seconds without a command from any app, it writes only what changed, every
-20 seconds, rather than every second. Opening an app wakes it at once. When the
+90 seconds without a command from any app or a change on the RV, it writes only
+what changed, every 20 seconds, rather than every second. Opening an app wakes it
+at once, and so does a change someone makes on the RV, from the panel, Home
+Assistant or a phone on Bluetooth: switching a light, a climate zone's mode, fan
+or setpoint, or starting the generator. Readings that move on their own, such as
+voltages, temperatures and tanks, don't wake it. When the
 app stops cleanly, it tells the apps the RV's gateway is offline.
 
 To see that it's working, look in the log. About once a minute the app writes a
 line like `Appwrite publish loop alive: last write 3s ago, 14 write(s) and 0
-failed publish(es) in the last 60s, dormant, 0 command(s) and 0 pulse(s) handled`,
-with `active` while an app is watching. Pulses are the apps saying they're
-watching; commands are what they ask the RV to do. Commands that switch lights,
+failed publish(es) in the last 60s, dormant, 0 command(s) and 0 pulse(s)
+handled, 0 change(s) seen on the RV`, with `active` while an app is watching or
+someone is using the RV. Pulses are the apps saying they're watching; commands are
+what they ask the RV to do; changes are what someone changed on the RV itself. Commands that switch lights,
 line heaters or the auto generator on or off are logged one by one too, starting
 with the cloud they came from, as in `Appwrite OnOffCommand relayed: output 23 ->
 ON`; climate zone commands are logged only with `log_level: debug`. The `publish

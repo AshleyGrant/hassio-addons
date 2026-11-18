@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.83
+
+- On BMPro's newer cloud (Appwrite), a change you make on the RV now reaches the Cloud within about a second, even when no app has been watching. Before, the add-on's quiet mode held it for up to 20 seconds, so a phone that switched from Bluetooth to the Cloud could briefly show the old state. It covers lights and dimming, the water pump and heaters, a climate zone's mode, fan, heat source or setpoint, and the generator starting or stopping, whether you change it from the panel, Home Assistant or a phone on Bluetooth. Readings that move on their own, such as voltages, temperatures and tanks, still wait for the quiet cycle.
+- The log's `Appwrite publish loop alive` line now also counts those changes, as `N change(s) seen on the RV`.
+- Nothing changes in the options.
+
 ## 1.0.82
 
 - Four new diagnostic sensors on the RV device show the versions packed into your control node's firmware string, which Home Assistant shows whole as the device's firmware: *Controller Firmware*, *Companion Firmware*, *Panel (RVMC) Version* and *BLE Protocol Version*. For `1.1.0E3.0C2.1P4.5.0` they show `1.1.0`, `3.0`, `2.1` and `4.5.0`. A version the node doesn't report shows as unknown (#529).
