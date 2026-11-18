@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.84
+
+- On BMPro's newer cloud (Appwrite), an app that opens after a quiet spell now hears the add-on is live a little sooner: the add-on answers the app's first check at once, instead of at its next once-a-second look.
+- Nothing changes in the options.
+
 ## 1.0.83
 
 - On BMPro's newer cloud (Appwrite), a change you make on the RV now reaches the Cloud within about a second, even when no app has been watching. Before, the add-on's quiet mode held it for up to 20 seconds, so a phone that switched from Bluetooth to the Cloud could briefly show the old state. It covers lights and dimming, the water pump and heaters, a climate zone's mode, fan, heat source or setpoint, and the generator starting or stopping, whether you change it from the panel, Home Assistant or a phone on Bluetooth. Readings that move on their own, such as voltages, temperatures and tanks, still wait for the quiet cycle.
