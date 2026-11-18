@@ -1,5 +1,5 @@
 name: Stoner Control RV Controller Bridge
-version: "1.0.84"
+version: "1.0.85"
 slug: stoner-control
 description: >-
   Pairs with a RVMN101C control node over BLE and exposes lights,
@@ -24,6 +24,8 @@ schema:
   device_identifier: int(0,255)
   mqtt_discovery_prefix: str
   mqtt_base_topic: str
+  cloud_email: str?
+  cloud_password: password?
   firebase_username: str?
   firebase_password: password?
   firebase_project_id: str?

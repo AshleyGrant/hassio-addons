@@ -48,8 +48,10 @@ that the node was not in pairing mode when the app tried to connect.
 | `mqtt_username`            | *(auto-detected)*  | Optional explicit MQTT username override. |
 | `mqtt_password`            | *(auto-detected)*  | Optional explicit MQTT password override. |
 | `mqtt_ssl`                 | `false`            | For an external broker set with `mqtt_host`: when `true` the app connects to it over TLS, on port `8883` unless `mqtt_port` is set. The broker's certificate must be trusted and must match `mqtt_host`. Without `mqtt_host` the app uses the Mosquitto app's internal broker, which it reaches without TLS, so `mqtt_ssl` is ignored and the log says so. |
-| `firebase_username`        | *(empty)*          | Optional BMPro account e-mail, the one you use in BMPRO Connect. When set together with `firebase_password`, the app mirrors live BLE state into BMPro's cloud and relays commands from it to the RV over Bluetooth, on the cloud `cloud_backend` chooses. The name predates BMPro's newer cloud; the same account works for both. |
-| `firebase_password`        | *(empty)*          | Password for that BMPro account. |
+| `cloud_email`              | *(empty)*          | Optional BMPro account e-mail, the one you use in BMPRO Connect. When set together with `cloud_password`, the app mirrors live BLE state into BMPro's cloud and relays commands from it to the RV over Bluetooth, on the cloud `cloud_backend` chooses. The same account works for both of BMPro's clouds. |
+| `cloud_password`           | *(empty)*          | Password for that BMPro account. |
+| `firebase_username`        | *(empty)*          | Deprecated: `cloud_email`'s old name. Still read while `cloud_email` is blank, and the log says so at start-up. Move the e-mail to `cloud_email` and clear this one. |
+| `firebase_password`        | *(empty)*          | Deprecated: `cloud_password`'s old name, read while `cloud_password` is blank. Move the password to `cloud_password` and clear this one. |
 | `cloud_backend`            | `appwrite`         | Which of BMPro's clouds the app is your RV's gateway on: `appwrite`, `firebase` or `both`, or `none` to turn the cloud off even with the account set. See [Choosing BMPro's cloud](#choosing-bmpros-cloud). |
 | `firebase_project_id`      | `setec-bmpro-prod` | Firebase project ID for the BMPro cloud environment. Override only if BMPro changes environments. |
 | `firebase_api_key`         | *(set by default)*  | Firebase web API key used for email/password sign-in. |
@@ -77,8 +79,8 @@ be right. The cloud is never used as the source of truth for current state.
 
 If the BMPro cloud refuses the e-mail address or password, the app logs an
 error saying why and turns cloud mirroring off until it restarts, rather than
-trying again, which could get the account locked. Correct `firebase_username`
-or `firebase_password`, save the options, and restart the app when Home
+trying again, which could get the account locked. Correct `cloud_email`
+or `cloud_password`, save the options, and restart the app when Home
 Assistant offers to. Bluetooth control and Home Assistant carry on either way.
 
 If the BMPro cloud is limiting sign-ins instead (after too many attempts, or

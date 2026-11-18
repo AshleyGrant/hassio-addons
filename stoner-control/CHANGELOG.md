@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.85
+
+- The BMPro account options are now `cloud_email` and `cloud_password`, since the same account signs in to both of BMPro's clouds. Your existing `firebase_username` and `firebase_password` keep working, and the log reminds you at each start until you move them, naming the old options it still reads. To move them, open the app's Configuration tab, turn on **Show unused optional configuration options** so the new options show, copy the e-mail and password into them, clear the old ones, and save.
+
 ## 1.0.84
 
 - On BMPro's newer cloud (Appwrite), an app that opens after a quiet spell now hears the add-on is live a little sooner: the add-on answers the app's first check at once, instead of at its next once-a-second look.
