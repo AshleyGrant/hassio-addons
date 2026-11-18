@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.86
+
+- Nothing changes for you. Inside, the add-on's code drops a setting on its waits that did nothing in a process like the add-on's, and the build now checks that the cloud code it shares with the phone app always uses it. This build also carries 1.0.85's later change to the shared cloud code, which only the phone app runs.
+- Nothing changes in the options.
+
 ## 1.0.85
 
 - The BMPro account options are now `cloud_email` and `cloud_password`, since the same account signs in to both of BMPro's clouds. Your existing `firebase_username` and `firebase_password` keep working, and the log reminds you at each start until you move them, naming the old options it still reads. To move them, open the app's Configuration tab, turn on **Show unused optional configuration options** so the new options show, copy the e-mail and password into them, clear the old ones, and save.
