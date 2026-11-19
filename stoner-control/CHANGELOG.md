@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.89
+
+- On BMPro's newer cloud (Appwrite), changing `cloud_email` to another account now deletes the old account's saved session on Appwrite before the add-on signs in to the new one. Before, the add-on carried on as the old account, and its session stayed among that account's ten until it expired. The add-on now keeps which account its session belongs to in a small new file, `/data/appwrite_session_account`, beside the session. On the first start after this update, it asks Appwrite whose its saved session is. So if you changed `cloud_email` on an earlier version, which kept the old account's session, that session is deleted now and the add-on signs in to the account in your options.
+- Appwrite keeps at most ten sessions for an account and signs out the oldest when there are more, which can be your phone. After it signs in, the add-on now checks how many the account has and the log warns when it is 8 or more, for example `This BMPro account has 9 of Appwrite's 10 sessions.`
+- When the add-on replaces a session, it gives up deleting the old one after 5 seconds if Appwrite doesn't answer, so the sign-in isn't held up. A restart, a stop and a password change still keep the session Appwrite accepts, as before.
+- Nothing changes in the options.
+
 ## 1.0.88
 
 - On BMPro's newer cloud (Appwrite), a command sent while the add-on was starting, or while its live connection to the cloud was briefly down, now runs once the connection is back. Before, the add-on never saw it: the live connection only carries commands sent after it connects. Each time it connects, the add-on now looks for commands from the last minute it hasn't run, and the log says `Catching up Cloud command …` for each.

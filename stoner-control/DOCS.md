@@ -123,6 +123,13 @@ app has to be its gateway there. `cloud_backend` chooses:
   keeps the Appwrite session in the app's `/data` folder, so a restart reuses
   it. The log says how the move went, for example
   `Appwrite account ready (Exchanged); connecting the gateway.`
+  Appwrite keeps at most ten sessions for your account, shared by your phones,
+  the wall unit and this app, and a new one past ten signs out the oldest. So
+  the app signs in only when it has no session Appwrite still accepts, keeps
+  its session when it stops or you change the password in its options, and
+  deletes it on Appwrite when you change `cloud_email` to another account. If
+  the log warns `This BMPro account has 8 of Appwrite's 10 sessions`, sign out
+  of BMPRO Connect or Stoner Control on devices you no longer use.
 - `firebase`: the app is your RV's gateway on Firebase only, as before
   Appwrite.
 - `both`: the app is your RV's gateway on both clouds at once, for anything
