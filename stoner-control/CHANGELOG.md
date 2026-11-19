@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.88
+
+- On BMPro's newer cloud (Appwrite), a command sent while the add-on was starting, or while its live connection to the cloud was briefly down, now runs once the connection is back. Before, the add-on never saw it: the live connection only carries commands sent after it connects. Each time it connects, the add-on now looks for commands from the last minute it hasn't run, and the log says `Catching up Cloud command …` for each.
+- On Appwrite, a command may now be up to 60 seconds old when it runs, where it was 10 seconds, and only the newest command for each thing runs: switch a light on and then off while the add-on is away and it just switches it off, logging `Skipping Cloud command …` for the other. A later All Lights also replaces an earlier on or off for a single light. Firebase keeps its 10 seconds.
+- The add-on remembers which cloud commands it ran for two minutes, through reconnects and restarts, so none runs twice. It keeps that in a small new file, `/data/appwrite_commands.json`, beside its saved Appwrite session.
+- Nothing changes in the options.
+
 ## 1.0.87
 
 - Nothing changes for you. This build carries two changes to the cloud code it shares with the phone app, which only the phone app uses: on BMPro's newer cloud (Appwrite), a fresh read of the RV's state now counts as the RV being live, as it does when the app connects (#566), and the phone app can tell its live connection to Appwrite to reconnect at once when the app reopens or the network comes back, rather than waiting up to 30 seconds (#564). The add-on's own connection to Appwrite reconnects exactly as before: nothing in the add-on sends that signal.

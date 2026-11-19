@@ -72,7 +72,14 @@ If your BMPro account is configured, the app signs in to the BMPro cloud that
 `cloud_backend` chooses (Appwrite by default) and behaves as your RV's gateway
 there. While the RV is connected over Bluetooth it publishes the live BLE
 state to that cloud and relays fresh supported commands from it to the RV over
-BLE. Commands more than 10 seconds old are discarded, as the BMPro gateway does.
+BLE. On Appwrite, a command up to 60 seconds old still runs, so one sent while
+the app was starting or briefly lost the cloud's live connection runs once the
+connection is back: each time it connects, the app looks for commands it
+missed. Only the newest command for each thing runs: if you switched a light
+on and then off meanwhile, it just switches it off. The app remembers which
+commands it ran for two minutes, through reconnects and restarts (in
+`/data/appwrite_commands.json`), so it never runs one twice. On Firebase, commands
+more than 10 seconds old are discarded, as the BMPro gateway does.
 Their age, and on Firebase the `serverTimestamp` the app writes with the state,
 come from the cloud's clock, so the Home Assistant host's clock doesn't need to
 be right. The cloud is never used as the source of truth for current state.
