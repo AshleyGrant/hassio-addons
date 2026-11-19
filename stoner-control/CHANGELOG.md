@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.87
+
+- Nothing changes for you. This build carries two changes to the cloud code it shares with the phone app, which only the phone app uses: on BMPro's newer cloud (Appwrite), a fresh read of the RV's state now counts as the RV being live, as it does when the app connects (#566), and the phone app can tell its live connection to Appwrite to reconnect at once when the app reopens or the network comes back, rather than waiting up to 30 seconds (#564). The add-on's own connection to Appwrite reconnects exactly as before: nothing in the add-on sends that signal.
+- Nothing changes in the options.
+
 ## 1.0.86
 
 - Nothing changes for you. Inside, the add-on's code drops a setting on its waits that did nothing in a process like the add-on's, and the build now checks that the cloud code it shares with the phone app always uses it. This build also carries 1.0.85's later change to the shared cloud code, which only the phone app runs.
