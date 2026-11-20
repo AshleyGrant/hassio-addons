@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.107
+
+- Nothing changes for you. Inside, the part of the add-on that turns what your RV reports (lights, tanks, temperatures, the generator, climate) into Home Assistant states is a class of its own. Home Assistant receives exactly the same messages as before; new tests now check each one.
+- Nothing changes in the options.
+
 ## 1.0.106
 
 - Nothing changes for you. Inside, the part of the add-on that chooses between Bluetooth and the Cloud keeps its connection, controller and status pieces in files of their own, and every connection factory now has to say how it handles pausing one transport's reconnects. The code that runs is exactly the same.
