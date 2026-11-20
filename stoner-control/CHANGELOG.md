@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.96
+
+- Nothing changes for you. Inside, the Firebase cloud code the add-on shares with the apps keeps time with the add-on's own clock, so its timing rules can be tested without waiting. A sign-in token is still refreshed when it has 5 minutes or less left, and every other interval is the same.
+- Nothing changes in the options.
+
 ## 1.0.95
 
 - The Bluetooth lines from the Linux side of the add-on lose their `[DBG]`, `[INF]`, `[WRN]` and `[ERR]` tags, since each log line already shows its level. They now come from `RiverstoneControl.Platform.Linux.LinuxPlatformBle`. For example, `info: RiverstoneControl.Ble.InTheHand.BleVehicleStackFactory[0] [BLE] [INF] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` now reads `info: RiverstoneControl.Platform.Linux.LinuxPlatformBle[0] [BLE] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` Each message keeps its wording and its level. The rest of the Bluetooth code follows in later versions.
