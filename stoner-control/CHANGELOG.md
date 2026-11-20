@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.103
+
+- Nothing changes for you. Inside, three of the add-on's pauses (the Firebase command listener's 5-second restart wait, its 1-second pause between deletes, and the 2-second limit on stopping the Appwrite gateway) are fixed values rather than settings the tests could change, and are tested on a simulated clock. Every value is the same as before.
+- Nothing changes in the options.
+
 ## 1.0.102
 
 - Nothing changes for you. Inside, the names of the fields in the Firebase cloud document the add-on mirrors to are written in one place, shared with the apps, so the two sides can't drift apart. Every name is exactly as before. The Appwrite cloud gateway also no longer holds up a connection while it loads its saved account at start.
