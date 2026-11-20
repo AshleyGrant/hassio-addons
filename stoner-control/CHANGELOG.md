@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.109
+
+- Nothing changes for you. Inside, the part of the add-on that finds the MQTT broker, connects, subscribes and restores the session after a reconnect is a class of its own, which finishes splitting the Home Assistant bridge into four parts. Home Assistant receives exactly the same messages as before.
+- Nothing changes in the options.
+
 ## 1.0.108
 
 - Nothing changes for you. Inside, every pause and time limit in the Bluetooth code (the handshake, the link check every 30 seconds, connect and disconnect limits, the app.json download, the BlueZ scan) runs on a clock the tests can control. Every value is the same as before.
