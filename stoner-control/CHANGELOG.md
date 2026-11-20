@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.90
+
+- Nothing changes in what the add-on does. This build carries a tidy-up of the code it shares with the apps: the build now treats every compiler and analyzer warning as an error, and the code was cleaned up to match.
+- Work the add-on starts in the background without waiting for it, such as a cloud write or a retry, now logs a warning if it fails, for example `Background work failed: …`. Before, such a failure could go unseen. A failure nothing else catches is logged once as an error: `A background task failed and nothing observed it`. Neither should appear in normal use; if you see one, the line says what failed.
+- Nothing changes in the options.
+
 ## 1.0.89
 
 - On BMPro's newer cloud (Appwrite), changing `cloud_email` to another account now deletes the old account's saved session on Appwrite before the add-on signs in to the new one. Before, the add-on carried on as the old account, and its session stayed among that account's ten until it expired. The add-on now keeps which account its session belongs to in a small new file, `/data/appwrite_session_account`, beside the session. On the first start after this update, it asks Appwrite whose its saved session is. So if you changed `cloud_email` on an earlier version, which kept the old account's session, that session is deleted now and the add-on signs in to the account in your options.
