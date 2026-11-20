@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.91
+
+- 1.0.90 logged `A background task failed and nothing observed it`, with a long stack trace, several times a minute. The cause is the Bluetooth library on Linux: it reads an `Appearance` property from every Bluetooth device it hears, and many devices don't have one. That failure is harmless, and it always happened; 1.0.90 was the first build to report it. Now each kind of failure is logged at Error once, with its stack trace, and every repeat at Debug, so it no longer fills the log. Expect about one Error line about `Appearance` soon after each start.
+- Nothing changes in the options.
+
 ## 1.0.90
 
 - Nothing changes in what the add-on does. This build carries a tidy-up of the code it shares with the apps: the build now treats every compiler and analyzer warning as an error, and the code was cleaned up to match.
