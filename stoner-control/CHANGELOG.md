@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.108
+
+- Nothing changes for you. Inside, every pause and time limit in the Bluetooth code (the handshake, the link check every 30 seconds, connect and disconnect limits, the app.json download, the BlueZ scan) runs on a clock the tests can control. Every value is the same as before.
+- Nothing changes in the options.
+
 ## 1.0.107
 
 - Nothing changes for you. Inside, the part of the add-on that turns what your RV reports (lights, tanks, temperatures, the generator, climate) into Home Assistant states is a class of its own. Home Assistant receives exactly the same messages as before; new tests now check each one.
