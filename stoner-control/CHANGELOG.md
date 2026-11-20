@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.99
+
+- The rest of the Bluetooth code's log lines lose their `[DBG]` and `[WRN]` tags too, since each line already shows its level. They still come from `RiverstoneControl.Ble.InTheHand.BleVehicleStackFactory`. For example, `warn: …BleVehicleStackFactory[0] [BLE] [WRN] PairAsync threw: …` now reads `warn: …BleVehicleStackFactory[0] [BLE] PairAsync threw: …`. Each message keeps its wording and its level.
+- Nothing changes in the options.
+
 ## 1.0.98
 
 - Nothing changes for you. Inside, each connection to the RV now runs from an object of its own, which connects, watches the link and tears it down in the same order as before. The add-on's log lines, its timings and the order it stops in are all unchanged.
