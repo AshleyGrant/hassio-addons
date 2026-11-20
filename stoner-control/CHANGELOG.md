@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.102
+
+- Nothing changes for you. Inside, the names of the fields in the Firebase cloud document the add-on mirrors to are written in one place, shared with the apps, so the two sides can't drift apart. Every name is exactly as before. The Appwrite cloud gateway also no longer holds up a connection while it loads its saved account at start.
+- Nothing changes in the options.
+
 ## 1.0.101
 
 - Nothing changes for you. Inside, the last of the Bluetooth code the add-on shares with the apps moves its logging to the same style as the rest, and the old text-callback path between the Bluetooth layers is gone. The add-on's own Bluetooth lines already moved in 1.0.95 and 1.0.99, and read the same as in those versions.
