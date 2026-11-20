@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.93
+
+- Nothing changes for you. Inside, the add-on's connection host, its MQTT bridge, its cloud mirror and its reconnect supervisors now keep time with one shared clock, so their timing rules can be tested without waiting in real time. Every interval stays the same: the 10-minute connecting watchdog, the 10-second status refresh, the publish watchdog's 15-second check and 45-second stall, and the MQTT reconnect's 5-second back-off.
+- Nothing changes in the options.
+
 ## 1.0.92
 
 - Nothing changes for you. Inside, the add-on's two cloud clients now share one sign-in cool-down type with the apps, instead of each keeping its own copy. The add-on still keeps Firebase's and Appwrite's cool-downs apart, with the same lengths: 5 minutes after the first refused sign-in, doubling to 30.
