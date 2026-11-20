@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.104
+
+- Nothing changes for you. Inside, the part of the add-on that decides which Home Assistant entities your RV has, and how each is described to Home Assistant, is a class of its own. Home Assistant receives exactly the same messages as before; a test now checks every one of them byte for byte.
+- Nothing changes in the options.
+
 ## 1.0.103
 
 - Nothing changes for you. Inside, three of the add-on's pauses (the Firebase command listener's 5-second restart wait, its 1-second pause between deletes, and the 2-second limit on stopping the Appwrite gateway) are fixed values rather than settings the tests could change, and are tested on a simulated clock. Every value is the same as before.
