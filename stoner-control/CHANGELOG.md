@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.97
+
+- Nothing changes for you. Inside, the Appwrite gateway that mirrors your RV to BMPro's newer cloud now lives in the cloud code the add-on shares with the apps, rather than in the add-on itself. Its log lines keep their wording and levels; a few now name the gateway's new home as their source, for example `RiverstoneControl.Transport.Appwrite.Gateway.AppwriteGatewayRunner`.
+- Nothing changes in the options.
+
 ## 1.0.96
 
 - Nothing changes for you. Inside, the Firebase cloud code the add-on shares with the apps keeps time with the add-on's own clock, so its timing rules can be tested without waiting. A sign-in token is still refreshed when it has 5 minutes or less left, and every other interval is the same.
