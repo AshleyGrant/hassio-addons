@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.106
+
+- Nothing changes for you. Inside, the part of the add-on that chooses between Bluetooth and the Cloud keeps its connection, controller and status pieces in files of their own, and every connection factory now has to say how it handles pausing one transport's reconnects. The code that runs is exactly the same.
+- Nothing changes in the options.
+
 ## 1.0.105
 
 - Nothing changes for you. Inside, the part of the add-on that turns what you do in Home Assistant (a light switch, a slide-out button, a thermostat change) into a command for your RV is a class of its own. Every command sends exactly what it sent before; new tests now check the exact command each one sends.
