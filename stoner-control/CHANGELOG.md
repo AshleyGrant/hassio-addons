@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.92
+
+- Nothing changes for you. Inside, the add-on's two cloud clients now share one sign-in cool-down type with the apps, instead of each keeping its own copy. The add-on still keeps Firebase's and Appwrite's cool-downs apart, with the same lengths: 5 minutes after the first refused sign-in, doubling to 30.
+- Nothing changes in the options.
+
 ## 1.0.91
 
 - 1.0.90 logged `A background task failed and nothing observed it`, with a long stack trace, several times a minute. The cause is the Bluetooth library on Linux: it reads an `Appearance` property from every Bluetooth device it hears, and many devices don't have one. That failure is harmless, and it always happened; 1.0.90 was the first build to report it. Now each kind of failure is logged at Error once, with its stack trace, and every repeat at Debug, so it no longer fills the log. Expect about one Error line about `Appearance` soon after each start.
