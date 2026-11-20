@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.101
+
+- Nothing changes for you. Inside, the last of the Bluetooth code the add-on shares with the apps moves its logging to the same style as the rest, and the old text-callback path between the Bluetooth layers is gone. The add-on's own Bluetooth lines already moved in 1.0.95 and 1.0.99, and read the same as in those versions.
+- Nothing changes in the options.
+
 ## 1.0.100
 
 - Nothing changes for you. Inside, the add-on's saved copy of the RV's profile (`/data/app_json.json`), which it falls back to when the node can't send its own, is handled by a small class of its own. The file, its log lines and when it's used are all unchanged.
