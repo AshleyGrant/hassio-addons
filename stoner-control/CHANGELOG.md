@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.105
+
+- Nothing changes for you. Inside, the part of the add-on that turns what you do in Home Assistant (a light switch, a slide-out button, a thermostat change) into a command for your RV is a class of its own. Every command sends exactly what it sent before; new tests now check the exact command each one sends.
+- Nothing changes in the options.
+
 ## 1.0.104
 
 - Nothing changes for you. Inside, the part of the add-on that decides which Home Assistant entities your RV has, and how each is described to Home Assistant, is a class of its own. Home Assistant receives exactly the same messages as before; a test now checks every one of them byte for byte.
