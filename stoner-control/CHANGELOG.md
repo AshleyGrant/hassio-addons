@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.98
+
+- Nothing changes for you. Inside, each connection to the RV now runs from an object of its own, which connects, watches the link and tears it down in the same order as before. The add-on's log lines, its timings and the order it stops in are all unchanged.
+- Nothing changes in the options.
+
 ## 1.0.97
 
 - Nothing changes for you. Inside, the Appwrite gateway that mirrors your RV to BMPro's newer cloud now lives in the cloud code the add-on shares with the apps, rather than in the add-on itself. Its log lines keep their wording and levels; a few now name the gateway's new home as their source, for example `RiverstoneControl.Transport.Appwrite.Gateway.AppwriteGatewayRunner`.
