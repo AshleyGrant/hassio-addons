@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.100
+
+- Nothing changes for you. Inside, the add-on's saved copy of the RV's profile (`/data/app_json.json`), which it falls back to when the node can't send its own, is handled by a small class of its own. The file, its log lines and when it's used are all unchanged.
+- Nothing changes in the options.
+
 ## 1.0.99
 
 - The rest of the Bluetooth code's log lines lose their `[DBG]` and `[WRN]` tags too, since each line already shows its level. They still come from `RiverstoneControl.Ble.InTheHand.BleVehicleStackFactory`. For example, `warn: …BleVehicleStackFactory[0] [BLE] [WRN] PairAsync threw: …` now reads `warn: …BleVehicleStackFactory[0] [BLE] PairAsync threw: …`. Each message keeps its wording and its level.
