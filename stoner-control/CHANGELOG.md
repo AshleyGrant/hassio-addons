@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.94
+
+- Nothing changes for you. Inside, the add-on's Firestore mirror now runs from a class of its own, beside the Appwrite gateway's, instead of inside the connection host. Its timing, its log lines and the order the add-on stops in are all unchanged. This build also carries the cloud code's new list of what each connection can do, which nothing in the add-on reads yet.
+- Nothing changes in the options.
+
 ## 1.0.93
 
 - Nothing changes for you. Inside, the add-on's connection host, its MQTT bridge, its cloud mirror and its reconnect supervisors now keep time with one shared clock, so their timing rules can be tested without waiting in real time. Every interval stays the same: the 10-minute connecting watchdog, the 10-second status refresh, the publish watchdog's 15-second check and 45-second stall, and the MQTT reconnect's 5-second back-off.
