@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.95
+
+- The Bluetooth lines from the Linux side of the add-on lose their `[DBG]`, `[INF]`, `[WRN]` and `[ERR]` tags, since each log line already shows its level. They now come from `RiverstoneControl.Platform.Linux.LinuxPlatformBle`. For example, `info: RiverstoneControl.Ble.InTheHand.BleVehicleStackFactory[0] [BLE] [INF] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` now reads `info: RiverstoneControl.Platform.Linux.LinuxPlatformBle[0] [BLE] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` Each message keeps its wording and its level. The rest of the Bluetooth code follows in later versions.
+- One thing is different below the log text. The add-on now reads a Bluetooth device's full property list only when Debug logging is on, because that read was only there for the log line. At `info` and above nothing visible changes.
+- Nothing changes in the options.
+
 ## 1.0.94
 
 - Nothing changes for you. Inside, the add-on's Firestore mirror now runs from a class of its own, beside the Appwrite gateway's, instead of inside the connection host. Its timing, its log lines and the order the add-on stops in are all unchanged. This build also carries the cloud code's new list of what each connection can do, which nothing in the add-on reads yet.
