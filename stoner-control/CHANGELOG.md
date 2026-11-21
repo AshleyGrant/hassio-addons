@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.117
+
+- If only one of `cloud_email` and `cloud_password` is filled in, the add-on now says so in its log, naming the empty option, instead of quietly running without the Cloud.
+- Nothing changes in the options.
+
 ## 1.0.116
 
 - Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud fixes how a connect started while another connection is already up behaves (#646). Such a connect no longer shows the link as briefly connecting when it never went down, and it now waits for the connection it was asked for instead of returning at once. The add-on has only Bluetooth and always connects from scratch, so it never hit either case.
