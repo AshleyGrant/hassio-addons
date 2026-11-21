@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.111
+
+- Nothing changes for you. Inside, the last of the add-on's waits and timings (the Bluetooth connect and disconnect limits on Linux, the status store's coalescing timer) run on the add-on's clock, and the build now refuses any code that reads the real clock directly, so they can't drift back. Every value is the same as before.
+- Nothing changes in the options.
+
 ## 1.0.110
 
 - Nothing changes for you. Inside, the add-on's tests now run its connection host and Home Assistant bridge on a simulated clock with the real waits (the 15-second reconnect, the gateway's publish timings, the bridge's broker and diagnostic checks), instead of shortened test-only settings, which are gone. Every value is the same as before.
