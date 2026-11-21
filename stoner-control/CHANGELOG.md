@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.120
+
+- Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud:
+  - retries a connection with its own code instead of the Polly library, with exactly the same number of tries, the same waits and the same errors retried (#542);
+  - no longer reports a fault when a connect is cancelled while another way to connect is set up but unused, or for an instant while it disconnects or stops (#702). The add-on treats a fault and a disconnect alike;
+  - no longer marks a connection as failed after it has already recovered from a drop (#717).
+- Nothing changes in the options.
+
 ## 1.0.119
 
 - The add-on now asks Home Assistant for 15 seconds to stop, rather than the usual 10, and finishes closing its connection to the RV within 13 seconds, which leaves it time to exit. Before, in a rare case where the Bluetooth link was busy and slow to close, closing could take about 12 seconds, and Home Assistant stopped the add-on by force at 10 seconds. The 13 seconds also cover the 2-second wait added in 1.0.118.
