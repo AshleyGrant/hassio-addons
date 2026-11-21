@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.116
+
+- Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud fixes how a connect started while another connection is already up behaves (#646). Such a connect no longer shows the link as briefly connecting when it never went down, and it now waits for the connection it was asked for instead of returning at once. The add-on has only Bluetooth and always connects from scratch, so it never hit either case.
+- Inside, the add-on host's code uses newer C# features, with no change in what it does (#688).
+- Nothing changes in the options.
+
 ## 1.0.115
 
 - Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud fixes a rare case where a connection could stay down: if its automatic reconnecting was paused and then switched back on at the very moment it was pausing, the switch back on was lost (#668). It now always reconnects. The phone app pauses Bluetooth's reconnecting while it is in the background; the add-on never pauses it, so the add-on itself was never affected.
