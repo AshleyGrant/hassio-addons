@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.112
+
+- Nothing changes for you. Inside, the add-on waits for a stopping task through a bounded wait it now shares with the apps, instead of its own copy, so a part that never finishes stopping is still given up on after the same time limit and logged with the same warning.
+- Nothing changes in the options.
+
 ## 1.0.111
 
 - Nothing changes for you. Inside, the last of the add-on's waits and timings (the Bluetooth connect and disconnect limits on Linux, the status store's coalescing timer) run on the add-on's clock, and the build now refuses any code that reads the real clock directly, so they can't drift back. Every value is the same as before.
