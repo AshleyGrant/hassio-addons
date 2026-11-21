@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.110
+
+- Nothing changes for you. Inside, the add-on's tests now run its connection host and Home Assistant bridge on a simulated clock with the real waits (the 15-second reconnect, the gateway's publish timings, the bridge's broker and diagnostic checks), instead of shortened test-only settings, which are gone. Every value is the same as before.
+- Nothing changes in the options.
+
 ## 1.0.109
 
 - Nothing changes for you. Inside, the part of the add-on that finds the MQTT broker, connects, subscribes and restores the session after a reconnect is a class of its own, which finishes splitting the Home Assistant bridge into four parts. Home Assistant receives exactly the same messages as before.
