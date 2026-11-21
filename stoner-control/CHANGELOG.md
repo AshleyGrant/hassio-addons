@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.114
+
+- If a Bluetooth connection attempt fails in a way the add-on doesn't expect, the log now says so at once with a warning that names Bluetooth, instead of much later or not at all. An attempt that is simply stopped still logs nothing new, and everything else works exactly as before.
+- Nothing changes in the options.
+
 ## 1.0.113
 
 - The red `fail:` line about a missing Bluetooth "Appearance" property, which appeared in the log a few seconds after every start, is gone. It came from a fault in the Bluetooth library the add-on uses, which reads a property some nearby devices don't have; Bluetooth was never affected. That exact fault is now logged at Debug level with a plain explanation. Any other unexpected failure still shows as `fail:`.
