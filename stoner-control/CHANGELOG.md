@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.113
+
+- The red `fail:` line about a missing Bluetooth "Appearance" property, which appeared in the log a few seconds after every start, is gone. It came from a fault in the Bluetooth library the add-on uses, which reads a property some nearby devices don't have; Bluetooth was never affected. That exact fault is now logged at Debug level with a plain explanation. Any other unexpected failure still shows as `fail:`.
+- Nothing else changes for you. Inside:
+  - The Bluetooth, Cloud, profile and status code is written with newer C# features throughout (#652, #653, #655, #660, #661, #664, #665 and #670). Each project's build now fails if older patterns creep back in. What the code does is unchanged.
+  - The part that chooses between Bluetooth and the Cloud now gives each connection its own supervisor with its own lock (#666), instead of running every connection under one lock. It connects, reconnects and logs exactly as before.
+- Nothing changes in the options.
+
 ## 1.0.112
 
 - Nothing changes for you. Inside, the add-on waits for a stopping task through a bounded wait it now shares with the apps, instead of its own copy, so a part that never finishes stopping is still given up on after the same time limit and logged with the same warning.
