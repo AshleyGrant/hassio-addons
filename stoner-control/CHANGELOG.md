@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.118
+
+- When the add-on stops, it now waits up to 2 seconds for its connection's background work (connection attempts, status updates, and the clean-up after a dropped connection) to finish, so a stopped connection has really stopped. That wait only happens when the work doesn't stop as soon as it's asked. The Cloud's clean stop (`gatewayActive: false`) still goes out first, before this wait (#599).
+- Nothing else changes for you. Inside, the part that chooses between Bluetooth and the Cloud:
+  - leaves the link Disconnected, not Faulted, when something cancels a connect it started, even if that connect fails a moment later (#647). The add-on only cancels a connect while it stops;
+  - refuses, and says why, a connect to a provider whose settings turned it off, instead of trying anyway (#648). The add-on never connects one provider on its own, so this only shows in the phone app.
+- Nothing changes in the options.
+
 ## 1.0.117
 
 - If only one of `cloud_email` and `cloud_password` is filled in, the add-on now says so in its log, naming the empty option, instead of quietly running without the Cloud.
