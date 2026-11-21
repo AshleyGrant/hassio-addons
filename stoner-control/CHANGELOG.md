@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.115
+
+- Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud fixes a rare case where a connection could stay down: if its automatic reconnecting was paused and then switched back on at the very moment it was pausing, the switch back on was lost (#668). It now always reconnects. The phone app pauses Bluetooth's reconnecting while it is in the background; the add-on never pauses it, so the add-on itself was never affected.
+- Nothing changes in the options.
+
 ## 1.0.114
 
 - If a Bluetooth connection attempt fails in a way the add-on doesn't expect, the log now says so at once with a warning that names Bluetooth, instead of much later or not at all. An attempt that is simply stopped still logs nothing new, and everything else works exactly as before.
