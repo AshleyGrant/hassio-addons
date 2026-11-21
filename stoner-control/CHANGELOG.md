@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.119
+
+- The add-on now asks Home Assistant for 15 seconds to stop, rather than the usual 10, and finishes closing its connection to the RV within 13 seconds, which leaves it time to exit. Before, in a rare case where the Bluetooth link was busy and slow to close, closing could take about 12 seconds, and Home Assistant stopped the add-on by force at 10 seconds. The 13 seconds also cover the 2-second wait added in 1.0.118.
+- The Appwrite Cloud is still told the add-on has stopped (`gatewayActive: false`) before Bluetooth is closed, and the add-on gives that the time it needs even when its MQTT connection to Home Assistant is slow to close, as long as that connection closes within about 12 seconds.
+- If a step runs out of time, the log says so in a warning ending "didn't stop within the add-on's 13s stop budget; abandoning it." A normal stop is unchanged.
+- Nothing changes in the options.
+
 ## 1.0.118
 
 - When the add-on stops, it now waits up to 2 seconds for its connection's background work (connection attempts, status updates, and the clean-up after a dropped connection) to finish, so a stopped connection has really stopped. That wait only happens when the work doesn't stop as soon as it's asked. The Cloud's clean stop (`gatewayActive: false`) still goes out first, before this wait (#599).

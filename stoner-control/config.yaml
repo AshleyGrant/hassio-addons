@@ -1,5 +1,5 @@
 name: Stoner Control RV Controller Bridge
-version: "1.0.118"
+version: "1.0.119"
 slug: stoner-control
 description: >-
   Pairs with a RVMN101C control node over BLE and exposes lights,
@@ -41,4 +41,7 @@ schema:
   ble_device_id: str?
 startup: services
 boot: auto
+# Seconds Supervisor waits for the add-on to stop before it kills it: 10 to 300, default 10.
+# AddOnStopBudget.SupervisorStopTimeout must match it; its stop budget is this less 2 s.
+timeout: 15
 hassio_api: true
