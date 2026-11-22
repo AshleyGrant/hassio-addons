@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.122
+
+- Nothing changes for you. This release comes from work on the phone app and the website (#538). They now share one copy of the climate rules, for All Zones, confirming a change and the setpoint hold, instead of each having its own. It touches two parts of what the add-on is built from:
+  - the VehicleState library gains the connection status, the Sync All Zones rule and the setpoint tolerance the two apps share. The add-on doesn't use them;
+  - the shared package list gains a test-only library the add-on doesn't use.
+- Nothing changes in the options.
+
 ## 1.0.121
 
 - Nothing changes for you. This release comes from work on the phone app (#539). The only add-on file it touches is a build setting in the Appwrite library: the access to its internals that the phone app's test build needs moves from the app itself to the app's new test library. The add-on's code is the same.
