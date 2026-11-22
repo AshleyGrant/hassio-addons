@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.121
+
+- Nothing changes for you. This release comes from work on the phone app (#539). The only add-on file it touches is a build setting in the Appwrite library: the access to its internals that the phone app's test build needs moves from the app itself to the app's new test library. The add-on's code is the same.
+- Nothing changes in the options.
+
 ## 1.0.120
 
 - Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud:
