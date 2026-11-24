@@ -160,6 +160,14 @@ With the default, `appwrite`, the Stoner Control web app no longer sees your
 RV, because it reads Firebase only. Choose `both` if you use it. A value you
 have saved for `cloud_backend` is kept across updates.
 
+Each time the RV connects, the log says which of the two gateways are on and
+what `cloud_backend` is set to, for example
+`Cloud gateways for this connection: Firebase off, Appwrite on (cloud_backend: appwrite).`
+A gateway is on when `cloud_backend` chooses it and both `cloud_email` and
+`cloud_password` are filled in (counting the deprecated names). One that is on but can't run for that
+connection, because the cloud refused the account or there's no app.json for
+the RV, says why in a warning of its own.
+
 If BMPro hasn't moved your account yet, the Appwrite gateway can't start: the
 log says `The Appwrite gateway isn't running yet (NotMigratedYet)`, and the app
 asks again every 30 minutes. With `appwrite` alone your RV is then on no cloud
@@ -204,6 +212,21 @@ and every Realtime event it receives. When Appwrite limits a kind of request, it
 also says how many are left and, when Appwrite says, when the limit resets, as in
 `…: 200 in 84 ms, rate limit 118 of 120 left, resets in 42 s`. No password, session or
 document contents appear in any of them.
+
+Also with `log_level: debug`, the app logs each time it reads, saves, replaces or
+deletes the Appwrite session it keeps in `/data/appwrite_session`, and the file
+beside it that records which account the session is for,
+`/data/appwrite_session_account`: for example
+`Found a saved Appwrite session in /data/appwrite_session.`,
+`Saved the Appwrite session to /data/appwrite_session.` or
+`Deleted the saved Appwrite session file /data/appwrite_session.`
+These lines give only the file and what happened, never the session, your e-mail
+address or your password. When the file is deleted because Appwrite refused the
+session, the reason comes in an info line just before it that starts
+`BMPro's new cloud refused the saved session`, such as
+`BMPro's new cloud refused the saved session; it is forgotten.` As the app starts it also logs
+`The Firebase ID token source for BMPro's token exchange is ready.`, which names no
+key or account.
 
 How the app talks to Appwrite, and why its quiet spells differ from BMPro's
 own gateway, is described in

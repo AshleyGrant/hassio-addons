@@ -1,617 +1,552 @@
 # Changelog
 
+## 1.0.123
+
+- Each log line now names its source with `StonerControl.` instead of `RiverstoneControl.`, for example `info: StonerControl.HomeAssistant.…`, and some of the names after that prefix have changed as well. If you search or filter the add-on's log by these names, update the search. The messages themselves are unchanged.
+- Each time the add-on connects to your RV, the log now records at info level which Cloud gateways are on and the `cloud_backend` value in use, for example `Cloud gateways for this connection: Firebase off, Appwrite on (cloud_backend: appwrite).` At debug level, it also records when the add-on finds, saves, replaces or deletes its saved Appwrite session in `/data`. These lines never include the session itself, the account e-mail or the password.
+- The other changes in this release are internal and do not change how the add-on behaves.
+
 ## 1.0.122
 
-- Nothing changes for you. This release comes from work on the phone app and the website (#538). They now share one copy of the climate rules, for All Zones, confirming a change and the setpoint hold, instead of each having its own. It touches two parts of what the add-on is built from:
-  - the VehicleState library gains the connection status, the Sync All Zones rule and the setpoint tolerance the two apps share. The add-on doesn't use them;
-  - the shared package list gains a test-only library the add-on doesn't use.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.121
 
-- Nothing changes for you. This release comes from work on the phone app (#539). The only add-on file it touches is a build setting in the Appwrite library: the access to its internals that the phone app's test build needs moves from the app itself to the app's new test library. The add-on's code is the same.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.120
 
-- Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud:
-  - retries a connection with its own code instead of the Polly library, with exactly the same number of tries, the same waits and the same errors retried (#542);
-  - no longer reports a fault when a connect is cancelled while another way to connect is set up but unused, or for an instant while it disconnects or stops (#702). The add-on treats a fault and a disconnect alike;
-  - no longer marks a connection as failed after it has already recovered from a drop (#717).
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.119
 
-- The add-on now asks Home Assistant for 15 seconds to stop, rather than the usual 10, and finishes closing its connection to the RV within 13 seconds, which leaves it time to exit. Before, in a rare case where the Bluetooth link was busy and slow to close, closing could take about 12 seconds, and Home Assistant stopped the add-on by force at 10 seconds. The 13 seconds also cover the 2-second wait added in 1.0.118.
-- The Appwrite Cloud is still told the add-on has stopped (`gatewayActive: false`) before Bluetooth is closed, and the add-on gives that the time it needs even when its MQTT connection to Home Assistant is slow to close, as long as that connection closes within about 12 seconds.
-- If a step runs out of time, the log says so in a warning ending "didn't stop within the add-on's 13s stop budget; abandoning it." A normal stop is unchanged.
-- Nothing changes in the options.
+- Home Assistant now allows the add-on 15 seconds to stop, rather than the usual 10, and the add-on finishes closing its connection to the RV within 13 seconds. Previously, in a rare case where the Bluetooth link was slow to close, stopping could take about 12 seconds, and Home Assistant stopped the add-on by force at 10.
+- The add-on still marks the RV's gateway as offline on Appwrite before it closes Bluetooth, even when its connection to the MQTT broker is slow to close, as long as that connection closes within about 12 seconds.
+- If a step of stopping runs out of time, the log records a warning ending "didn't stop within the add-on's 13s stop budget; abandoning it." A normal stop is unchanged.
 
 ## 1.0.118
 
-- When the add-on stops, it now waits up to 2 seconds for its connection's background work (connection attempts, status updates, and the clean-up after a dropped connection) to finish, so a stopped connection has really stopped. That wait only happens when the work doesn't stop as soon as it's asked. The Cloud's clean stop (`gatewayActive: false`) still goes out first, before this wait (#599).
-- Nothing else changes for you. Inside, the part that chooses between Bluetooth and the Cloud:
-  - leaves the link Disconnected, not Faulted, when something cancels a connect it started, even if that connect fails a moment later (#647). The add-on only cancels a connect while it stops;
-  - refuses, and says why, a connect to a provider whose settings turned it off, instead of trying anyway (#648). The add-on never connects one provider on its own, so this only shows in the phone app.
-- Nothing changes in the options.
+- When the add-on stops, it now waits up to 2 seconds for connection work in progress (a connection attempt, a status update, or the clean-up after a dropped link) to finish, so that the connection has fully stopped. The wait applies only when that work does not stop immediately. The gateway is still marked as offline in the Cloud first.
 
 ## 1.0.117
 
-- If only one of `cloud_email` and `cloud_password` is filled in, the add-on now says so in its log, naming the empty option, instead of quietly running without the Cloud.
-- Nothing changes in the options.
+- If only one of `cloud_email` and `cloud_password` is set, the log now reports it and names the empty option. Previously, the add-on ran without the Cloud and logged nothing about it.
 
 ## 1.0.116
 
-- Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud fixes how a connect started while another connection is already up behaves (#646). Such a connect no longer shows the link as briefly connecting when it never went down, and it now waits for the connection it was asked for instead of returning at once. The add-on has only Bluetooth and always connects from scratch, so it never hit either case.
-- Inside, the add-on host's code uses newer C# features, with no change in what it does (#688).
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.115
 
-- Nothing changes for you. Inside, the part that chooses between Bluetooth and the Cloud fixes a rare case where a connection could stay down: if its automatic reconnecting was paused and then switched back on at the very moment it was pausing, the switch back on was lost (#668). It now always reconnects. The phone app pauses Bluetooth's reconnecting while it is in the background; the add-on never pauses it, so the add-on itself was never affected.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.114
 
-- If a Bluetooth connection attempt fails in a way the add-on doesn't expect, the log now says so at once with a warning that names Bluetooth, instead of much later or not at all. An attempt that is simply stopped still logs nothing new, and everything else works exactly as before.
-- Nothing changes in the options.
+- If a Bluetooth connection attempt fails in an unexpected way, the log now records a Bluetooth warning immediately. Previously, the failure was logged much later or not at all.
 
 ## 1.0.113
 
-- The red `fail:` line about a missing Bluetooth "Appearance" property, which appeared in the log a few seconds after every start, is gone. It came from a fault in the Bluetooth library the add-on uses, which reads a property some nearby devices don't have; Bluetooth was never affected. That exact fault is now logged at Debug level with a plain explanation. Any other unexpected failure still shows as `fail:`.
-- Nothing else changes for you. Inside:
-  - The Bluetooth, Cloud, profile and status code is written with newer C# features throughout (#652, #653, #655, #660, #661, #664, #665 and #670). Each project's build now fails if older patterns creep back in. What the code does is unchanged.
-  - The part that chooses between Bluetooth and the Cloud now gives each connection its own supervisor with its own lock (#666), instead of running every connection under one lock. It connects, reconnects and logs exactly as before.
-- Nothing changes in the options.
+- The red `fail:` line about a missing Bluetooth "Appearance" property, logged a few seconds after every start, no longer appears. It came from the Bluetooth library reading a property that some nearby devices lack, and it never affected Bluetooth. That fault is now logged only at debug level, with an explanation. Any other unexpected failure still appears as `fail:`.
 
 ## 1.0.112
 
-- Nothing changes for you. Inside, the add-on waits for a stopping task through a bounded wait it now shares with the apps, instead of its own copy, so a part that never finishes stopping is still given up on after the same time limit and logged with the same warning.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.111
 
-- Nothing changes for you. Inside, the last of the add-on's waits and timings (the Bluetooth connect and disconnect limits on Linux, the status store's coalescing timer) run on the add-on's clock, and the build now refuses any code that reads the real clock directly, so they can't drift back. Every value is the same as before.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.110
 
-- Nothing changes for you. Inside, the add-on's tests now run its connection host and Home Assistant bridge on a simulated clock with the real waits (the 15-second reconnect, the gateway's publish timings, the bridge's broker and diagnostic checks), instead of shortened test-only settings, which are gone. Every value is the same as before.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.109
 
-- Nothing changes for you. Inside, the part of the add-on that finds the MQTT broker, connects, subscribes and restores the session after a reconnect is a class of its own, which finishes splitting the Home Assistant bridge into four parts. Home Assistant receives exactly the same messages as before.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.108
 
-- Nothing changes for you. Inside, every pause and time limit in the Bluetooth code (the handshake, the link check every 30 seconds, connect and disconnect limits, the app.json download, the BlueZ scan) runs on a clock the tests can control. Every value is the same as before.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.107
 
-- Nothing changes for you. Inside, the part of the add-on that turns what your RV reports (lights, tanks, temperatures, the generator, climate) into Home Assistant states is a class of its own. Home Assistant receives exactly the same messages as before; new tests now check each one.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.106
 
-- Nothing changes for you. Inside, the part of the add-on that chooses between Bluetooth and the Cloud keeps its connection, controller and status pieces in files of their own, and every connection factory now has to say how it handles pausing one transport's reconnects. The code that runs is exactly the same.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.105
 
-- Nothing changes for you. Inside, the part of the add-on that turns what you do in Home Assistant (a light switch, a slide-out button, a thermostat change) into a command for your RV is a class of its own. Every command sends exactly what it sent before; new tests now check the exact command each one sends.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.104
 
-- Nothing changes for you. Inside, the part of the add-on that decides which Home Assistant entities your RV has, and how each is described to Home Assistant, is a class of its own. Home Assistant receives exactly the same messages as before; a test now checks every one of them byte for byte.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.103
 
-- Nothing changes for you. Inside, three of the add-on's pauses (the Firebase command listener's 5-second restart wait, its 1-second pause between deletes, and the 2-second limit on stopping the Appwrite gateway) are fixed values rather than settings the tests could change, and are tested on a simulated clock. Every value is the same as before.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.102
 
-- Nothing changes for you. Inside, the names of the fields in the Firebase cloud document the add-on mirrors to are written in one place, shared with the apps, so the two sides can't drift apart. Every name is exactly as before. The Appwrite cloud gateway also no longer holds up a connection while it loads its saved account at start.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.101
 
-- Nothing changes for you. Inside, the last of the Bluetooth code the add-on shares with the apps moves its logging to the same style as the rest, and the old text-callback path between the Bluetooth layers is gone. The add-on's own Bluetooth lines already moved in 1.0.95 and 1.0.99, and read the same as in those versions.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.100
 
-- Nothing changes for you. Inside, the add-on's saved copy of the RV's profile (`/data/app_json.json`), which it falls back to when the node can't send its own, is handled by a small class of its own. The file, its log lines and when it's used are all unchanged.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.99
 
-- The rest of the Bluetooth code's log lines lose their `[DBG]` and `[WRN]` tags too, since each line already shows its level. They still come from `RiverstoneControl.Ble.InTheHand.BleVehicleStackFactory`. For example, `warn: …BleVehicleStackFactory[0] [BLE] [WRN] PairAsync threw: …` now reads `warn: …BleVehicleStackFactory[0] [BLE] PairAsync threw: …`. Each message keeps its wording and its level.
-- Nothing changes in the options.
+- The remaining Bluetooth lines in the log no longer carry `[DBG]` and `[WRN]` tags, since each line already shows its level. For example, `[BLE] [WRN] PairAsync threw: …` now reads `[BLE] PairAsync threw: …`. Each message keeps its wording and its level.
 
 ## 1.0.98
 
-- Nothing changes for you. Inside, each connection to the RV now runs from an object of its own, which connects, watches the link and tears it down in the same order as before. The add-on's log lines, its timings and the order it stops in are all unchanged.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.97
 
-- Nothing changes for you. Inside, the Appwrite gateway that mirrors your RV to BMPro's newer cloud now lives in the cloud code the add-on shares with the apps, rather than in the add-on itself. Its log lines keep their wording and levels; a few now name the gateway's new home as their source, for example `RiverstoneControl.Transport.Appwrite.Gateway.AppwriteGatewayRunner`.
-- Nothing changes in the options.
+- A few Appwrite lines in the log show a different source name in front of the message. Their wording and levels are unchanged.
 
 ## 1.0.96
 
-- Nothing changes for you. Inside, the Firebase cloud code the add-on shares with the apps keeps time with the add-on's own clock, so its timing rules can be tested without waiting. A sign-in token is still refreshed when it has 5 minutes or less left, and every other interval is the same.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.95
 
-- The Bluetooth lines from the Linux side of the add-on lose their `[DBG]`, `[INF]`, `[WRN]` and `[ERR]` tags, since each log line already shows its level. They now come from `RiverstoneControl.Platform.Linux.LinuxPlatformBle`. For example, `info: RiverstoneControl.Ble.InTheHand.BleVehicleStackFactory[0] [BLE] [INF] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` now reads `info: RiverstoneControl.Platform.Linux.LinuxPlatformBle[0] [BLE] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` Each message keeps its wording and its level. The rest of the Bluetooth code follows in later versions.
-- One thing is different below the log text. The add-on now reads a Bluetooth device's full property list only when Debug logging is on, because that read was only there for the log line. At `info` and above nothing visible changes.
-- Nothing changes in the options.
+- Many Bluetooth lines in the log no longer carry `[DBG]`, `[INF]`, `[WRN]` and `[ERR]` tags, since each line already shows its level. For example, `[BLE] [INF] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` now reads `[BLE] LinuxPlatformBle: using Bluetooth adapter /org/bluez/hci0.` Each message keeps its wording and its level. The remaining lines follow in 1.0.99.
 
 ## 1.0.94
 
-- Nothing changes for you. Inside, the add-on's Firestore mirror now runs from a class of its own, beside the Appwrite gateway's, instead of inside the connection host. Its timing, its log lines and the order the add-on stops in are all unchanged. This build also carries the cloud code's new list of what each connection can do, which nothing in the add-on reads yet.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.93
 
-- Nothing changes for you. Inside, the add-on's connection host, its MQTT bridge, its cloud mirror and its reconnect supervisors now keep time with one shared clock, so their timing rules can be tested without waiting in real time. Every interval stays the same: the 10-minute connecting watchdog, the 10-second status refresh, the publish watchdog's 15-second check and 45-second stall, and the MQTT reconnect's 5-second back-off.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.92
 
-- Nothing changes for you. Inside, the add-on's two cloud clients now share one sign-in cool-down type with the apps, instead of each keeping its own copy. The add-on still keeps Firebase's and Appwrite's cool-downs apart, with the same lengths: 5 minutes after the first refused sign-in, doubling to 30.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.91
 
-- 1.0.90 logged `A background task failed and nothing observed it`, with a long stack trace, several times a minute. The cause is the Bluetooth library on Linux: it reads an `Appearance` property from every Bluetooth device it hears, and many devices don't have one. That failure is harmless, and it always happened; 1.0.90 was the first build to report it. Now each kind of failure is logged at Error once, with its stack trace, and every repeat at Debug, so it no longer fills the log. Expect about one Error line about `Appearance` soon after each start.
-- Nothing changes in the options.
+- 1.0.90 logged `A background task failed and nothing observed it`, with a long stack trace, several times a minute. The cause is harmless and predates 1.0.90: the Bluetooth library reads an "Appearance" property from every nearby Bluetooth device, and many devices lack one. Each kind of failure is now logged as an error once, and any repeat only at debug level. About one error line about "Appearance" is still expected shortly after each start.
 
 ## 1.0.90
 
-- Nothing changes in what the add-on does. This build carries a tidy-up of the code it shares with the apps: the build now treats every compiler and analyzer warning as an error, and the code was cleaned up to match.
-- Work the add-on starts in the background without waiting for it, such as a cloud write or a retry, now logs a warning if it fails, for example `Background work failed: …`. Before, such a failure could go unseen. A failure nothing else catches is logged once as an error: `A background task failed and nothing observed it`. Neither should appear in normal use; if you see one, the line says what failed.
-- Nothing changes in the options.
+- Background work, such as a Cloud update or a retry, now logs a warning if it fails, for example `Background work failed: …`. Previously, such a failure could go unrecorded. A failure that nothing else handles is logged once as an error: `A background task failed and nothing observed it`. Neither message is expected in normal use; each names what failed.
 
 ## 1.0.89
 
-- On BMPro's newer cloud (Appwrite), changing `cloud_email` to another account now deletes the old account's saved session on Appwrite before the add-on signs in to the new one. Before, the add-on carried on as the old account, and its session stayed among that account's ten until it expired. The add-on now keeps which account its session belongs to in a small new file, `/data/appwrite_session_account`, beside the session. On the first start after this update, it asks Appwrite whose its saved session is. So if you changed `cloud_email` on an earlier version, which kept the old account's session, that session is deleted now and the add-on signs in to the account in your options.
-- Appwrite keeps at most ten sessions for an account and signs out the oldest when there are more, which can be your phone. After it signs in, the add-on now checks how many the account has and the log warns when it is 8 or more, for example `This BMPro account has 9 of Appwrite's 10 sessions.`
-- When the add-on replaces a session, it gives up deleting the old one after 5 seconds if Appwrite doesn't answer, so the sign-in isn't held up. A restart, a stop and a password change still keep the session Appwrite accepts, as before.
-- Nothing changes in the options.
+- On BMPro's newer cloud, Appwrite, changing `cloud_email` to another account now signs out the old account's session before the add-on signs in to the new one. Previously, the add-on continued as the old account, and that session occupied one of the old account's ten until it expired. If `cloud_email` was changed on an earlier version, the first start after this update signs out the old session and signs in to the account in the options.
+- Appwrite keeps at most ten sessions for an account and signs out the oldest when an eleventh is created, which may be one of your other devices. After signing in, the add-on now checks how many sessions the account has, and logs a warning at 8 or more, for example `This BMPro account has 9 of Appwrite's 10 sessions.` If you see this warning, sign out on devices you no longer use.
+- A restart, a stop or a password change still keeps a session that Appwrite accepts, as before.
 
 ## 1.0.88
 
-- On BMPro's newer cloud (Appwrite), a command sent while the add-on was starting, or while its live connection to the cloud was briefly down, now runs once the connection is back. Before, the add-on never saw it: the live connection only carries commands sent after it connects. Each time it connects, the add-on now looks for commands from the last minute it hasn't run, and the log says `Catching up Cloud command …` for each.
-- On Appwrite, a command may now be up to 60 seconds old when it runs, where it was 10 seconds, and only the newest command for each thing runs: switch a light on and then off while the add-on is away and it just switches it off, logging `Skipping Cloud command …` for the other. A later All Lights also replaces an earlier on or off for a single light. Firebase keeps its 10 seconds.
-- The add-on remembers which cloud commands it ran for two minutes, through reconnects and restarts, so none runs twice. It keeps that in a small new file, `/data/appwrite_commands.json`, beside its saved Appwrite session.
-- Nothing changes in the options.
+- On Appwrite, a command sent while the add-on was starting, or while its live connection to the Cloud was briefly down, now runs once the connection returns. Previously, such a command was missed. The log records `Catching up Cloud command …` for each.
+- On Appwrite, a command may now be up to 60 seconds old when it runs, where the limit was 10 seconds, and only the newest command for each light or device runs. For example, if a light is switched on and then off while the add-on is away, the add-on only switches it off, and logs `Skipping Cloud command …` for the other. A later All Lights command also replaces an earlier command for a single light. Firebase keeps its 10-second limit.
+- The add-on remembers which Cloud commands it ran for two minutes, across reconnects and restarts, so no command runs twice.
 
 ## 1.0.87
 
-- Nothing changes for you. This build carries two changes to the cloud code it shares with the phone app, which only the phone app uses: on BMPro's newer cloud (Appwrite), a fresh read of the RV's state now counts as the RV being live, as it does when the app connects (#566), and the phone app can tell its live connection to Appwrite to reconnect at once when the app reopens or the network comes back, rather than waiting up to 30 seconds (#564). The add-on's own connection to Appwrite reconnects exactly as before: nothing in the add-on sends that signal.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.86
 
-- Nothing changes for you. Inside, the add-on's code drops a setting on its waits that did nothing in a process like the add-on's, and the build now checks that the cloud code it shares with the phone app always uses it. This build also carries 1.0.85's later change to the shared cloud code, which only the phone app runs.
-- Nothing changes in the options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.85
 
-- The BMPro account options are now `cloud_email` and `cloud_password`, since the same account signs in to both of BMPro's clouds. Your existing `firebase_username` and `firebase_password` keep working, and the log reminds you at each start until you move them, naming the old options it still reads. To move them, open the app's Configuration tab, turn on **Show unused optional configuration options** so the new options show, copy the e-mail and password into them, clear the old ones, and save.
+- **Action needed:** move your BMPro account from `firebase_username` and `firebase_password` to the new `cloud_email` and `cloud_password` options, since the same account signs in to both of BMPro's clouds. On the add-on's Configuration tab, turn on **Show unused optional configuration options** to show the new options, copy the e-mail address and password into them, clear the old ones, and save.
+- `firebase_username` and `firebase_password` are deprecated but still work. Until they are moved, the log shows a reminder at each start, naming the old options it still reads.
 
 ## 1.0.84
 
-- On BMPro's newer cloud (Appwrite), an app that opens after a quiet spell now hears the add-on is live a little sooner: the add-on answers the app's first check at once, instead of at its next once-a-second look.
-- Nothing changes in the options.
+- On Appwrite, after a quiet period, the add-on now answers an app's first status check immediately, rather than within the next second, so the RV appears live sooner.
 
 ## 1.0.83
 
-- On BMPro's newer cloud (Appwrite), a change you make on the RV now reaches the Cloud within about a second, even when no app has been watching. Before, the add-on's quiet mode held it for up to 20 seconds, so a phone that switched from Bluetooth to the Cloud could briefly show the old state. It covers lights and dimming, the water pump and heaters, a climate zone's mode, fan, heat source or setpoint, and the generator starting or stopping, whether you change it from the panel, Home Assistant or a phone on Bluetooth. Readings that move on their own, such as voltages, temperatures and tanks, still wait for the quiet cycle.
+- On Appwrite, a change made on the RV now reaches the Cloud within about a second, even when no app has been watching. Previously, the add-on's quiet mode could delay it by up to 20 seconds, so the Cloud could briefly show the old state. This applies to lights and dimming, the water pump and heaters, a climate zone's mode, fan, heat source or setpoint, and the generator starting or stopping, whether the change comes from the panel, Home Assistant or another device on Bluetooth. Readings that change on their own, such as voltages, temperatures and tank levels, still follow the quiet cycle.
 - The log's `Appwrite publish loop alive` line now also counts those changes, as `N change(s) seen on the RV`.
-- Nothing changes in the options.
 
 ## 1.0.82
 
-- Four new diagnostic sensors on the RV device show the versions packed into your control node's firmware string, which Home Assistant shows whole as the device's firmware: *Controller Firmware*, *Companion Firmware*, *Panel (RVMC) Version* and *BLE Protocol Version*. For `1.1.0E3.0C2.1P4.5.0` they show `1.1.0`, `3.0`, `2.1` and `4.5.0`. A version the node doesn't report shows as unknown (#529).
-- The RV device in Home Assistant now shows the control node's serial number and hardware version, where they were blank before.
-- Nothing changes in the options.
+- Four new diagnostic sensors on the RV device show the versions contained in the control node's firmware string, which Home Assistant shows in full as the device's firmware: **Controller Firmware**, **Companion Firmware**, **Panel (RVMC) Version** and **BLE Protocol Version**. For `1.1.0E3.0C2.1P4.5.0` they show `1.1.0`, `3.0`, `2.1` and `4.5.0`. A version the node does not report shows as unknown.
+- The RV device in Home Assistant now shows the control node's serial number and hardware version, which were previously blank.
 
 ## 1.0.81
 
-- The add-on now publishes your RV control node's serial number and firmware versions to BMPro's newer cloud (Appwrite), where they were blank before, along with the node's hardware revision and, if the RV reports one, the serial number its maker gave the RV. Apps that follow your RV on Appwrite, such as the Stoner Control web app, now get the control node's serial number there too (#526).
-- Nothing changes in the options.
+- The add-on now publishes the control node's serial number, firmware versions and hardware revision to Appwrite, where they were previously blank, along with the RV's own serial number if the RV reports one.
 
 ## 1.0.80
 
-- Commands relayed from BMPro's cloud now say in the log which cloud they came from, as in `Appwrite OnOffCommand relayed: output 23 -> ON`. Before, every one said `Firebase`, even with `cloud_backend: appwrite` (#520).
-- Nothing else changes for you. The options, their values and defaults, and your saved Appwrite session in `/data` stay as they are. Inside, the app now signs in to BMPro's clouds through the same shared code as the Android and web apps.
+- Commands relayed from the Cloud now show in the log which cloud they came from, as in `Appwrite OnOffCommand relayed: output 23 -> ON`. Previously, every one said `Firebase`, even with `cloud_backend: appwrite`.
 
 ## 1.0.79
 
-- With `log_level: debug`, each Appwrite request that BMPro's cloud limits now also says how many such requests are left and when the limit resets, as in `…: 200 in 84 ms, rate limit 118 of 120 left, resets in 42 s`. Nothing changes at `info`.
+- With `log_level: debug`, each Appwrite request that BMPro's cloud limits now also shows how many such requests remain and when the limit resets, as in `…: 200 in 84 ms, rate limit 118 of 120 left, resets in 42 s`. Nothing changes at `info`.
 
 ## 1.0.78
 
-- On BMPro's newer cloud (Appwrite), the log now shows the app working. Once a minute it writes `Appwrite publish loop alive: …`, with when it last wrote, how many writes and failures it had, whether it's active or dormant, and how many commands and pulses it handled. With `log_level: debug` it also logs every request it makes to Appwrite and every Realtime event it receives. Before, it was silent unless something failed.
+- On Appwrite, the log now shows the add-on's activity. Once a minute it writes `Appwrite publish loop alive: …`, with when it last wrote, how many writes and failures it had, whether it is active or dormant, and how many commands and pulses it handled. With `log_level: debug` it also logs every request it makes to Appwrite and every live update it receives. Previously, it logged nothing unless something failed.
 
 ## 1.0.77
 
-- New `cloud_backend` value, `none`: turns BMPro's cloud off, even with your BMPro account set. The add-on then signs in to neither cloud, publishes nothing to them and relays no commands from BMPRO Connect, and the "Last Firebase Publish" and "Last Successful Firebase Publish" sensors are removed when the RV next connects. Bluetooth control and Home Assistant work as before. A saved Appwrite session stays in `/data`, unused. Choosing a cloud again brings the gateway and the sensors back. See the Documentation tab.
+- New `cloud_backend` value, `none`: turns BMPro's cloud off, even when a BMPro account is set. The add-on then signs in to neither cloud, publishes nothing to them and relays no commands from BMPRO Connect. Bluetooth control and Home Assistant work as before.
+- With `none`, the **Last Firebase Publish** and **Last Successful Firebase Publish** sensors are removed when the RV next connects. Choosing a cloud again restores them. See the Documentation tab.
 
 ## 1.0.76
 
-- `cloud_backend` now defaults to `appwrite`, BMPro's newer cloud, where BMPRO Connect looks for your RV. If you never chose a value, the add-on becomes your RV's gateway on Appwrite after this update, and stops publishing to Firebase. The Stoner Control web app reads Firebase only, so choose `both` to keep it working. If BMPro hasn't moved your account to Appwrite yet, choose `firebase` or `both` until it has. A value you have saved for `cloud_backend` is kept. See the Documentation tab.
+- **Action needed** if BMPro has not yet moved your BMPro account to Appwrite: set `cloud_backend` to `firebase` or `both`. With the new default alone, the RV is then on neither cloud. If you still need the RV on Firebase after your account has moved, set `cloud_backend` to `both`.
+- `cloud_backend` now defaults to `appwrite`, BMPro's newer cloud, where BMPRO Connect looks for the RV. Where no value was chosen, the add-on becomes the RV's gateway on Appwrite after this update and stops publishing to Firebase. A saved `cloud_backend` value is kept. See the Documentation tab.
 
 ## 1.0.75
 
-- No change for you here. This release carries shared Cloud code that now says how old the Firestore data is, which the web app uses to tell you when your RV may have moved to BMPro's newer cloud.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.74
 
-- No change for you here. The code that builds the RV's catalogue for BMPro's newer cloud moved into the shared Appwrite code, unchanged, so the Android app's automated tests can use it too.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.73
 
-- No change for you here. This release carries shared code for the Android app, which now moves your Cloud account to BMPro's newer cloud after an update and says how old Cloud data is.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.72
 
-- New `cloud_backend` option: choose which of BMPro's clouds the add-on is your RV's gateway on, `firebase`, `appwrite` or `both`. It defaults to `firebase`, so nothing changes until you choose. With `appwrite` or `both`, the add-on moves your BMPro account to the newer Appwrite cloud the way BMPRO Connect does, using the same e-mail address and password, and keeps the session in `/data`. If BMPro hasn't moved your account yet, it says so in the log and asks again every 30 minutes; keep `firebase` or `both` until then. See the Documentation tab.
+- New `cloud_backend` option: chooses which of BMPro's clouds the add-on is the RV's gateway on, `firebase`, `appwrite` or `both`. It defaults to `firebase`, so nothing changes until another value is chosen.
+- With `appwrite` or `both`, the add-on moves the BMPro account to Appwrite the way BMPRO Connect does, with the same e-mail address and password, and keeps the session across restarts. If BMPro has not yet moved the account, the log says so and the add-on checks again every 30 minutes; keep `firebase` or `both` until then. See the Documentation tab.
 
 ## 1.0.71
 
-- No change for you here yet. This release carries the add-on's gateway to BMPro's newer Appwrite cloud: it publishes your RV's state there and relays commands from it, with the same quiet spells as the Firebase mirror when nobody is watching. It stays off until a later release adds the option to choose it, and the add-on keeps using Firebase until then.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.70
 
-- No change for you here. This release carries shared Cloud code for the Android app, which now keeps a refresh token instead of its password. The add-on still signs in with the password in its options.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.69
 
-- Faulted sensors now reach the phone and web apps as faults over Cloud. A faulted tank showed its last level, or waited forever, and a faulted outside temperature kept its last value.
-- Fixed a Bluetooth subscribe that failed never being tried again. The next attempt said it was already subscribed and skipped the work.
-- The rest of this release is shared code and housekeeping, with no change for you here: the web app no longer saves its Cloud password, and the BLE key is no longer written out in plain text in the source.
+- A faulted sensor is now published to the Cloud as a fault. Previously, the Cloud kept a faulted tank's last level, or never received one, and kept a faulted outside temperature's last value.
+- Fixed a failed Bluetooth subscription never being retried: the next attempt treated it as already subscribed.
 
 ## 1.0.68
 
-- Fixed sensor faults showing as real readings. An open temperature sensor read 128.0 C and a faulted tank sender read over 100 %, and Home Assistant recorded those in its history. A faulted sensor now reads as unknown. If one of your sensors is faulted, it will change to unknown after this update (#399).
-- Fixed the Home Assistant device being named "Disconnected", with firmware "unknown", after a Bluetooth drop during the first connection. It lasted until the add-on restarted. A later connection now corrects the name and firmware, and a failed read never replaces a real value. Entity IDs don't change (#414).
+- Fixed faulted sensors appearing as real readings. An open temperature sensor read 128.0 °C and a faulted tank sender read over 100 %, and Home Assistant recorded those values in its history. A faulted sensor now reads as unknown, so any faulted sensor changes to unknown after this update.
+- Fixed the RV's device in Home Assistant being named "Disconnected", with firmware "unknown", after a Bluetooth drop during the first connection, until the add-on restarted. A later connection now corrects the name and firmware. Entity IDs do not change.
 
 ## 1.0.67
 
-- Fixed a dim or setpoint being lost when the Bluetooth write before it failed. The newer value is now sent, and the 10-second status re-read no longer stops (#409).
-- The rest of this release is the shared Firebase code, for the phone and web apps:
-- Fixed apps showing old readings as current while the RV's gateway was offline. A status refresh could publish a document the apps otherwise withhold (#404).
-- Fixed apps judging the gateway by their own clock. A clock about 30 seconds fast hid all live cloud data, and a slow one showed a stopped gateway as live (#413).
+- Fixed a dimming level or setpoint being lost when the Bluetooth command before it failed. The newer value is now sent, and the 10-second status re-read continues.
 
 ## 1.0.66
 
-- Fixed cloud commands sent together being dropped. Turning a zone on and setting its mode and temperature arrive at the bridge at once, and it could keep the temperature and throw away the on and the mode. They're now relayed in the order they were sent, and a newer command only replaces an older one of the same kind for the same light or zone, so a slider still ends on its last value.
+- Fixed Cloud commands sent together being dropped. Turning a zone on and setting its mode and temperature arrive at the same time, and the add-on could keep the temperature and discard the power and mode commands. Commands now run in the order they were sent, and a newer command replaces an older one only if it is of the same kind for the same light or zone, so a slider still ends on its last value.
 
 ## 1.0.65
 
-- Fixed `ble_device_id`, and the device the bridge remembers, giving way to any BMPro node nearby. Every connect looked for a node by name alone, so a second coach in range could answer first, and the bridge would have sent Home Assistant's commands to it. A known device is now the only one the bridge will connect to, and it's never replaced.
-- If you replace your node, set `ble_device_id` to the new node's Bluetooth address, as the old one won't be found. A blank `ble_device_id` counts as no pin, and with no device known, the first connect finds one by name as before.
-- The bridge now records the device each time it finds it, so taking a pin away leaves that device rather than an older one.
+- Fixed the add-on connecting to any nearby BMPro node rather than the RV's own. It searched by name alone, so a second RV in range could answer first and receive Home Assistant's commands. The node in `ble_device_id`, or the one the add-on remembers, is now the only node it connects to.
+- `ble_device_id` now pins the add-on to that node: if the node is not found, the add-on keeps retrying rather than use another. If you replace the control node, set `ble_device_id` to the new node's Bluetooth address. A blank `ble_device_id` means no pin, and with no node remembered, the first connection finds one by name as before.
 
 ## 1.0.64
 
-- Fixed the All Lights switch in Home Assistant, which only echoed the last command sent to it. It now reads on only when every light is on, so it follows the lights themselves, whether they're changed from Home Assistant, a wall switch or an app, and it comes back correctly after the MQTT broker restarts.
-- The cloud document now carries the temperature sensors and whether the generator supports AGS, so the phone and web apps get a fuller profile over Cloud. Older apps ignore the new fields.
+- Fixed the **All Lights** switch, which only reflected the last command sent to it. It now reads on only when every light is on, whether the lights were changed from Home Assistant, a wall switch or elsewhere, and it is restored correctly after the MQTT broker restarts.
+- The RV's description in the Cloud now includes its temperature sensors and whether its generator supports auto start (AGS).
 
 ## 1.0.63
 
-- Fixed stopping the app while it reads the node's serial number or firmware version. A serial read carried on to the next source and could return the serial from the advertised name, or none at all, which could log a false "no serial number" message on the way out. A firmware read could log a false warning and report the version as unknown. A read that has started can't be interrupted, so a stop still waits for it to end, but the app now stops there instead of moving on. If you haven't stopped the app, a read that fails or times out still moves on to the next source (#389).
-- Fixed stopping the app while it downloads the RV's profile (`app.json`). A download that ended because of the stop was treated as a failed one, so the app logged false warnings and looked for its cached copy on the way out. It now just stops. If you haven't stopped the app, a failed download still falls back to the cached copy (#389).
-- Internal: a rejected Bluetooth MTU request is now compared with the MTU that was asked for, so Android Oreo no longer logs a false warning. This doesn't apply to the add-on, and nothing changes in how the app behaves (#389).
+- Fixed false warnings when the add-on stops while reading the node's serial number or firmware version, or while downloading the RV's configuration. It could log a false "no serial number" message or report the firmware as unknown while stopping. It now stops without them. A read that fails while the add-on is running still falls back as before.
 
 ## 1.0.62
 
-- Internal: the default Firebase web API key is now stored Base64-encoded in the source, so the plain key no longer appears in the source. The app decodes it at start-up and signs in with the same key as before, and a `firebase_api_key` you set yourself still takes precedence. Nothing changes in how the app behaves.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.61
 
-- Fixed dimming levels at 30% and 70%. The bridge rounded those two levels down where the BMPro app rounds them up, so it wrote one step less than the app (19660 instead of 19661, and 45874 instead of 45875, out of 65535). You won't see the difference on a light, but the commands now match the app's exactly (#370).
+- Fixed dimming at 30% and 70%. The add-on sent one step less than BMPRO Connect at those two levels. The difference is not visible on a light, but the commands now match BMPRO Connect's exactly.
 
 ## 1.0.60
 
-- Internal: the Linux (BlueZ) Bluetooth layer no longer checks at every log line whether it was given somewhere to log. When it has none, it now logs to a sink that discards everything, so its unit tests no longer need a second copy of each scenario without a log. Nothing changes in how the app behaves (#368).
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.59
 
-- Fixed a cloud stall that wasn't always counted. When updates to the cloud stop getting through, the app restarts its Firebase session, and after five such stalls in a row it also rebuilds the Bluetooth connection. If the stuck update finished just as the app stepped in, the stall was treated as an ordinary failure instead: the app signed in to Firebase again and didn't count it toward the five. It now always counts, and the extra sign-in is gone (#332).
-- Fixed two mistakes in how the app retries its Bluetooth connection:
-  - When the Bluetooth link dropped just after connecting, the connect gave up with a fault even though a reconnect was about to start. The app logged "The vehicle connection ended Faulted instead of connecting", waited 15 seconds and rebuilt the whole connection. It now waits for that reconnect instead (#319).
-  - A connection attempt that was stopped, then failed late, was logged as having "exhausted all retry attempts". It's now logged at debug level, and that warning means only that the retries really ran out (#320).
-- Internal: the shared connection layer now reports Connecting, not Connected, when one of two connections drops while the other is still connecting. This app uses only Bluetooth, so nothing changes here (#318).
-- Internal: the Bluetooth transport, device discovery and the Linux (BlueZ) Bluetooth layer now reach InTheHand and D-Bus through small interfaces, so their connect, scan, pairing and recovery logic can be unit tested without hardware. The authentication cipher's code is split into two methods, with the same choice between them. Two unused setters in the device catalog are removed. Saving a configuration archive straight to a file now leaves the document marked as changed when the save fails; nothing in the apps saves that way yet. None of this changes how the app behaves (#286, #288, #294, #297).
+- Fixed a Firebase stall that was not always counted. When Cloud updates stop getting through, the add-on restarts its Firebase session, and after five stalls in a row it also rebuilds the Bluetooth connection. A stall that cleared just as the add-on intervened was treated as an ordinary failure, with an extra sign-in, and did not count toward the five. It now always counts.
+- Fixed the add-on giving up on a Bluetooth connection that dropped just after connecting, while a reconnect was about to start. It logged "The vehicle connection ended Faulted instead of connecting", waited 15 seconds and rebuilt the whole connection. It now waits for that reconnect.
+- A connection attempt that was stopped and then failed late is no longer logged as having "exhausted all retry attempts". That warning now means only that the retries ran out.
 
 ## 1.0.58
 
-- Internal: the code that relays commands from the cloud to the RV now reaches Firebase's live listener through a small interface, so its checks (how old a command may be, which of two commands for the same light or zone wins, waiting for Bluetooth, not relaying a command twice) can be tested without Firebase. Three helpers nothing used are removed. Nothing changes in how commands are relayed (#290).
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.57
 
-- Internal: the app's start-up setup (log level, services, Bluetooth device and retry settings) moved into its own class, and the options loader can now be tested without Supervisor, for the unit test coverage work (#290). Nothing changes in how the app starts or behaves.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.56
 
-- Internal: shared cloud code changed for the phone app, which no longer reports the cloud as stale just after Android wakes it (#280). Nothing changes in this app.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.55
 
-- The app now re-reads every status from the RV every 10 seconds while connected, as well as reporting the changes the node sends. A missed update now corrects itself within 10 seconds, in Home Assistant and in the cloud. Commands still go first: a refresh waits while dimming or setpoint changes are being sent, and otherwise holds a command up for no more than the read in progress (#279).
-- Fixed the cloud showing lights as off when they were on. After a reconnect, the app could miss the light states its first status read sent, and kept reporting those lights as off in the cloud until they changed. Home Assistant only looked right because it still had the values from before the reconnect (#279).
+- The add-on now re-reads every status from the RV every 10 seconds while connected, in addition to reporting the changes the node sends. A missed update now corrects itself within 10 seconds, in Home Assistant and in the Cloud. Commands still take priority.
+- Fixed the Cloud showing lights as off when they were on. After a reconnect, the add-on could miss the light states the RV sent first, and reported those lights as off in the Cloud until they changed.
 
 ## 1.0.54
 
-- Internal: closing a connection is sturdier. If a disconnect fails or is cancelled, the app still releases the rest of that connection and finishes closing down, instead of stopping at the first failure. No change you'd notice in normal use: the Bluetooth disconnect already logged its own failures rather than throwing them (#275).
+- Closing a connection now completes even if one of its steps fails, rather than stopping at the first failure. This is not noticeable in normal use.
 
 ## 1.0.53
 
-- Bluetooth failures that used to vanish are now logged at debug level, with the reason. You'll see them only with `log_level: debug`. That covers a failed liveness check (with its count, "1/2"), a GATT service whose characteristics couldn't be listed, a skipped service during the configuration download, and a node identity field (the RV's OEM serial, manufacturer, model or revisions) that couldn't be read. Such a field still reads as empty, as before. Once whatever asked for an identity read, a GATT lookup or a configuration lookup is cancelled (the app stopping, or a connection torn down), a failure there is no longer skipped past: it goes up to the caller instead (#89).
-- Internal: the app's constructors now reject a missing argument at once, instead of failing later somewhere unrelated (#89). A time seam in the configuration download's reader makes its retry tests deterministic (#258). Neither changes behaviour. A connection teardown that fails to close the connection, past what the Bluetooth layer already logs at debug, now logs a warning instead of dropping it (#89).
+- Bluetooth problems that were previously not recorded are now logged at debug level, with the reason, so they appear only with `log_level: debug`. They include a failed link check (with its count, "1/2"), a part of the node that could not be read while connecting or downloading the RV's configuration, and a node detail (such as the RV's serial number, maker or model) that could not be read.
+- A connection that fails to close properly now logs a warning.
 
 ## 1.0.52
 
-- With Firebase cloud mirroring on, a state update the cloud refuses because it's busy (HTTP 429 or 503) is now followed by a wait before the next one: 2 seconds, doubling each time the cloud refuses again, up to 10 seconds. The app goes back to its usual pace once an update gets through. Before, it wrote again a second later, which is what the cloud's refusal asks clients not to do. Each refusal logs a warning with the wait (#228).
-- Any other failed state update, such as a network error, a timeout or another server error, is now sent again on the next pass, about a second later. Before, if nothing on the RV changed, it reached the cloud only with the next heartbeat, up to 10 seconds later, so the log's "will retry on next cycle" wasn't true (#228).
+- With Firebase on, when the Cloud rejects a state update because it is busy (HTTP 429 or 503), the add-on now waits before the next one: 2 seconds, doubling each time the Cloud refuses again, up to 10 seconds. Previously, it tried again a second later, which the Cloud's response asks clients not to do. Each refusal logs a warning with the wait.
+- Any other failed update, such as a network error or a timeout, is now sent again about a second later. Previously, if nothing on the RV changed, it reached the Cloud only up to 10 seconds later, despite the log's "will retry on next cycle".
 
 ## 1.0.51
 
-- With Firebase cloud mirroring on, the app no longer misses the RV's state when the first status reaches it just as mirroring starts. Before, if the RV then sent nothing new, the app published nothing to the cloud for that connection, not even its heartbeat, so the apps' Cloud mode showed the RV as offline until something on the RV changed (#252).
-- Internal: the live vehicle status store moves out of the shared contracts library into its own, and the app depends on it through an interface (#78). Unused code is removed: an MQTT transport kind the app never used (#68), and a list of Bluetooth services that only the deleted Web Bluetooth project used (#69). The app's own MQTT connection to Home Assistant is unchanged. Package pins that changed nothing are dropped (#83). No change in behaviour.
+- With Firebase on, the add-on no longer misses the RV's state when the first status arrives just as the Cloud connection starts. Previously, if the RV then sent nothing new, the add-on published nothing to the Cloud for that connection, so the RV appeared offline in the Cloud until something on the RV changed.
 
 ## 1.0.50
 
-- The app now reads the RV's configuration with the same rules as the Stoner Control apps, so all of them show the same devices (#71). Every sample configuration, the 425FO among them, gives the same entities as before. Only an unusual file reads differently. An item with no index is skipped, and a field of the wrong type is treated as missing; before, the item became index 0, or the whole file was refused. A temperature sensor's `analogIndex` is now read. A property name spelled with different capitals is now ignored. A file that repeats a key is now refused, so the app connects but publishes no entities for it.
-- If the RV's configuration leaves a light unnamed, its entity is now named "Light N", as in the apps and the cloud, instead of "Output N", and its MQTT topics change with the name. Home Assistant keeps the old entity, which stops responding, and ignores the new one, because both have the same unique ID. To recover, delete the Stoner Control device in Home Assistant's MQTT integration, which clears its discovery messages, then restart the app so it's discovered again. Customisations of its entities are lost (#71).
-- With Firebase cloud mirroring on, the vehicle document for the apps' Cloud mode is now built from the same configuration reader (#236). The document is unchanged for every sample configuration. On an unusual file, a tank type is normalised, so "gray" is written as `grey` and an unrecognised type as `fresh`. A voltage rail with no type is written as `unknown`, so Cloud mode shows it as an unknown rail, as Bluetooth does; before, it was shown as the system rail. Each motor's RV-C flag is read from the file's real key, where before it was always written as false. Temperature sensors are read by `analogIndex`, then `index`. Comments, trailing commas and wrong-typed fields no longer stop mirroring from starting.
-- A Bluetooth connection that drops just as it connects now counts as a failed attempt, retried with the usual delays and give-up time. Before, the app could keep it as its link and report connected while every command failed, until it restarted or *Force BLE Reconnect* was pressed (#243).
-- Internal: fixes to the shared status store's start and stop races (#70), unused configuration loaders removed (#73), and archive caps and saved timestamps in the configuration library (#72, #188). The app creates a new store for each connection and reads its configuration straight from the RV, so none of these changes its behaviour.
+- **Action needed** if your RV's configuration leaves a light unnamed: its entity is now named "Light N", matching its name in the Cloud, instead of "Output N". Home Assistant keeps the old entity, which stops responding, and ignores the new one. To fix this, delete the add-on's RV device in Home Assistant's MQTT integration, then restart the add-on so that the device is discovered again. Customisations of its entities are lost.
+- The add-on now reads the RV's configuration with stricter rules. A typical configuration gives the same entities as before. An unusual one may read differently, and one that repeats a setting is now refused: the add-on connects but creates no entities for it.
+- With Firebase on, the RV's description in the Cloud is now built with the same rules. It is unchanged for a typical configuration. In an unusual one, a battery or voltage source with no type now appears in the Cloud as unknown, as it does over Bluetooth, and a motor's RV-C setting is now sent correctly, where it was always sent as off.
+- Fixed a Bluetooth connection that dropped just as it connected being kept as the link, so that the add-on reported connected while every command failed, until it restarted or **Force BLE Reconnect** was pressed. It now counts as a failed attempt and is retried.
 
 ## 1.0.49
 
-- Internal: updated libraries. Polly, which times the reconnect retries, is now 8.9.0, with builds for current .NET versions. Tmds.DBus, under the Bluetooth connection on Linux, is now 0.95.2, a packaging-only release. No change in behaviour is expected.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.48
 
-- From this version on, stopping, updating or restarting the app no longer logs a warning that watching for Bluetooth service restarts failed. The update to 1.0.48 itself still shows it once, because Home Assistant stops the previous version to update. The watch simply ends with the connection, and that is now logged at debug level; a watch that fails for any other reason is still a warning (#159).
-- Internal: an unused cloud option is removed from the Firebase mirror's settings. No change in behaviour (#67).
+- Stopping, updating or restarting the add-on no longer logs a warning that watching for Bluetooth service restarts failed. The update to 1.0.48 itself still shows it once, because Home Assistant stops the previous version to update it.
 
 ## 1.0.47
 
-- With Firebase cloud mirroring on, a cloud that is limiting sign-ins (too many attempts, or a quota used up) is waited out. The app logs a warning and makes no sign-in attempt for 5 minutes, doubling each time the cloud refuses again up to 30 minutes, and mirroring resumes on its own. Before, it signed in again after 5 seconds, then 10, and so on, and on every new Bluetooth connection, each attempt extending the lockout (#66).
-- A cloud refusal of the e-mail address or password is recognised when the cloud adds an explanation after its error code. Before, such a refusal was retried like a passing failure instead of turning cloud mirroring off (#66).
+- With Firebase on, when the Cloud is limiting sign-ins (too many attempts, or a quota used up), the add-on now waits for the limit to pass. It logs a warning and makes no further attempt for 5 minutes, doubling each time the Cloud refuses again up to 30 minutes, and then resumes on its own. Previously, it tried again after a few seconds and on every new Bluetooth connection, and each attempt extended the lockout.
+- A Cloud refusal of the e-mail address or password is now recognised even when the Cloud adds an explanation to it. Previously, such a refusal was retried instead of turning the Cloud off.
 
 ## 1.0.46
 
-- The app is MIT licensed, and its assemblies carry the owner's copyright. Its documentation uses the app's name and points at the repository installs come from (#56).
-- The changelog now covers 1.0.1 to 1.0.11 (#56).
+- The add-on is now released under the MIT licence. Its documentation uses the add-on's name and links to the repository it is installed from.
 
 ## 1.0.45
 
-- With Firebase cloud mirroring on, the cloud now stamps the time on the state the app writes, and remote commands are judged by the cloud's clock. Before, a Home Assistant clock more than 30 seconds out made the apps show the RV as offline, and made the app drop valid commands or relay stale ones (#62).
-- Remote commands more than 10 seconds old are discarded, as the BMPro gateway does. Before, the limit was 30 seconds (#62).
+- With Firebase on, the Cloud now records the time on the state the add-on writes, and the age of a remote command is judged by the Cloud's clock. Previously, a Home Assistant clock more than 30 seconds out made the RV appear offline in the Cloud, and made the add-on drop valid commands or run stale ones.
+- Remote commands more than 10 seconds old are now discarded, as BMPro's own gateway does. Previously, the limit was 30 seconds.
 
 ## 1.0.44
 
-- With Firebase cloud mirroring on, a publish the cloud refuses now counts as failed. Before, it was logged and treated as published, so *Last Successful Firebase Publish* kept advancing while the apps saw stale state (#61).
-- A token the cloud rejects is refreshed before the next request, instead of being sent until it expires on its own up to 55 minutes later. A publish refused because of the session (its token, or the document it writes) is retried a second later, and after five in a row the app signs in to the cloud again; remote commands pause while it waits to retry. Other failures, such as the cloud being busy or unavailable, are retried with the regular heartbeat and leave remote commands running (#61).
+- With Firebase on, a publish the Cloud refuses now counts as failed. Previously, it was treated as published, so **Last Successful Firebase Publish** kept advancing while the Cloud held stale state.
+- When the Cloud rejects the add-on's sign-in, the add-on now renews it immediately, instead of continuing with it for up to 55 minutes. After five refused updates in a row, it signs in again, and pauses remote commands until it has.
 
 ## 1.0.43
 
-- With Firebase cloud mirroring on, a wrong e-mail address or password is reported once, with the reason, and cloud mirroring stays off until the app restarts. The same happens if the password changes or the account is disabled while the app runs. Before, the app retried the sign-in every few minutes for as long as it ran, which could get the account locked (#63).
-- With Firebase cloud mirroring on, the cloud sign-in token is refreshed once when it nears expiry, instead of by each part of the mirror at the same time (#60).
+- With Firebase on, a wrong e-mail address or password is now reported once, with the reason, and the Cloud stays off until the add-on restarts. The same applies if the password changes or the account is disabled while the add-on runs. Previously, the add-on retried the sign-in every few minutes, which could get the account locked.
 
 ## 1.0.42
 
-- Internal: the Firebase sign-in and token refresh used by the cloud transport move into one shared class, which the add-on's cloud mirror will use next. No change in behaviour (#63).
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.41
 
-- When the Bluetooth link drops, light dimming and climate setpoint changes still waiting to be sent are dropped at once, instead of each failing against the lost connection with a *worker failed* warning (#57).
-- A dropped connection is logged under the vehicle's name, and a connection attempt that fails while the RV is out of reach is no longer also logged as "Connection to Disconnected lost." (#57).
+- When the Bluetooth link drops, dimming and setpoint changes still waiting to be sent are discarded immediately, instead of each failing with a *worker failed* warning.
+- A dropped connection is now logged under the RV's name, and a failed connection attempt while the RV is out of reach is no longer also logged as "Connection to Disconnected lost."
 
 ## 1.0.40
 
-- With Firebase cloud mirroring on, the add-on stops cleanly. Before, stopping, restarting or updating it hung until Supervisor killed it after 10 seconds, and the app page then showed an error (#148).
-- With Firebase cloud mirroring on, the add-on reconnects to the RV after the Bluetooth link drops, or after **Force BLE Reconnect**. Before, the same hang most likely kept it from ever reconnecting until it was restarted (#148).
-- Each disconnect now logs how long tearing the connection down took (#148).
+- With Firebase on, the add-on now stops cleanly. Previously, stopping, restarting or updating it hung until Home Assistant stopped it by force after 10 seconds, and the add-on's page then showed an error.
+- With Firebase on, the add-on now reconnects to the RV after the Bluetooth link drops, or after **Force BLE Reconnect**. Previously, the same hang could prevent it from reconnecting until it was restarted.
+- Each disconnect now logs how long it took.
 
 ## 1.0.39
 
-- With Firebase cloud mirroring on, the add-on listens for remote commands only on the collection the apps write them to. The second listener it opened, which Firebase always refused, logged a *PermissionDenied* warning every time it started and was restarted straight away. Now a refused listener is logged once and left stopped. A listener that fails again straight after restarting waits longer each time, up to a minute, and one that ends without an error waits before restarting too (#59).
+- With Firebase on, the add-on no longer logs a *PermissionDenied* warning every time it starts. It had been listening for remote commands in a second location that Firebase always refused. A listener that keeps failing now waits longer between restarts, up to a minute.
 
 ## 1.0.38
 
-- Home Assistant now shows the add-on's entities as unavailable, instead of their last values, while the add-on is stopped or has lost the MQTT broker. The vehicle's entities are also unavailable while the Bluetooth link to the RV is down or reconnecting. *BLE Connected*, the Firebase timestamps, the vehicle configuration entities and the two Force buttons stay available, so you can still press **Force BLE Reconnect** (#52).
+- Home Assistant now shows the add-on's entities as unavailable, rather than their last values, while the add-on is stopped or has lost the MQTT broker. The RV's entities are also unavailable while the Bluetooth link is down or reconnecting.
+- **BLE Connected**, the Firebase publish sensors, the vehicle configuration entities and the two Force buttons stay available, so **Force BLE Reconnect** can still be pressed while the RV is out of reach.
 
 ## 1.0.37
 
-- With Firebase cloud mirroring on, a Bluetooth outage no longer counts as a stalled cloud publish. Before, every outage longer than 45 seconds tore down the cloud session and signed in to Firebase again, about every 50 seconds, with misleading "stall" warnings (#51).
-- A real stall now keeps the signed-in cloud session and only restarts the publishing and the remote-command listeners. Five stalls in a row without a successful publish rebuild the Bluetooth connection, as intended; before, the count never got past one (#51).
+- With Firebase on, a Bluetooth outage no longer counts as a stalled Cloud update. Previously, every outage longer than 45 seconds caused a new Firebase sign-in, about every 50 seconds, with misleading "stall" warnings.
+- A real stall now keeps the add-on signed in. Five stalls in a row rebuild the Bluetooth connection, as intended; previously, the count never passed one.
 
 ## 1.0.36
 
-- The add-on connects to the MQTT broker before the vehicle. While the RV is out of reach, *BLE Connected* now shows Off within a few seconds of start-up, instead of keeping whatever it showed when the add-on last stopped (#53).
-- If no MQTT broker can be found yet, for example while the Mosquitto app is still starting, the add-on logs why and keeps looking. Before, it stopped and had to be restarted (#53).
+- The add-on now connects to the MQTT broker before the RV. While the RV is out of reach, **BLE Connected** now shows Off within a few seconds of start-up, instead of its value from when the add-on last stopped.
+- If no MQTT broker can be found yet, for example while the Mosquitto broker is still starting, the add-on logs the reason and keeps looking. Previously, it stopped and had to be restarted.
 
 ## 1.0.35
 
-- *Slideout Lockout* now shows On while the slide-outs are locked out (on a trailer, while it's hitched for towing) and Off otherwise, with a trailer icon. It used Home Assistant's lock class, which shows on as Unlocked, so it read backwards. The entity keeps its ID and history (#116).
+- **Slideout Lockout** now shows On while the slide-outs are locked out (on a trailer, while it is hitched for towing) and Off otherwise, with a trailer icon. Previously, it read backwards, showing Unlocked while locked out. The entity keeps its ID and history.
 
 ## 1.0.34
 
-- New `mqtt_ssl` option: connect over TLS to an external MQTT broker set with `mqtt_host`. It was documented but couldn't be set, because it wasn't in the app's configuration schema. With TLS on and no `mqtt_port`, the app connects to port 8883, the standard MQTT-over-TLS port. Without `mqtt_host` the app keeps using the Mosquitto app's broker without TLS, and the log says `mqtt_ssl` was ignored (#54).
-- The unused `mqtt_protocol` option is gone. The app always uses MQTT 5, as it already did (#54).
+- New `mqtt_ssl` option: connects over TLS to an external MQTT broker set with `mqtt_host`. With TLS on and no `mqtt_port`, the add-on connects to port 8883. Without `mqtt_host`, the add-on continues to use the Mosquitto broker without TLS, and the log notes that `mqtt_ssl` was ignored.
+- The `mqtt_protocol` option, which had no effect, is removed. The add-on always uses MQTT 5, as it already did.
 
 ## 1.0.33
 
-- When the Bluetooth link to the node drops and the add-on is still stuck reconnecting 10 minutes later, it now rebuilds the connection from scratch. That safety net never actually ran before. It was also meant to fire after 60 seconds, which is shorter than the add-on's ordinary reconnect attempts, so it would have interrupted connections that were about to recover (#49).
-- Rebuilding the connection no longer cuts the old connection's clean-up short (#49).
+- When the Bluetooth link drops and the add-on is still reconnecting 10 minutes later, it now rebuilds the connection from scratch. Previously, this safeguard never ran.
 
 ## 1.0.32
 
-- If the RV is out of range or powered off when the add-on starts, the add-on now keeps trying to connect and creates no entities until it has really connected. Before, it created a placeholder device named "Disconnected", and the next good start added a second, real device with a duplicate of every entity (#48).
-- The add-on deletes that placeholder "Disconnected" device, and its entities, the first time it connects. Your real device and its entities are left alone (#48).
+- If the RV is out of range or switched off when the add-on starts, the add-on now keeps trying to connect and creates no entities until it has connected. Previously, it created a placeholder device named "Disconnected", and the next successful start added a second, real device with a duplicate of every entity.
+- The add-on deletes that placeholder "Disconnected" device, and its entities, the first time it connects. The real device and its entities are not affected.
 
 ## 1.0.31
 
-- The app's image now carries the standard source, licence (MIT) and title labels. The source label links its GitHub Container Registry packages to this repository however they are pushed, and the package page shows the licence. The images are public, so pulling them needs no login (#115).
-- The Documentation tab explains where the image comes from and how to build it yourself from a clone of the repository (#115).
+- The add-on's image now shows its source and its licence (MIT) on its GitHub Container Registry page. The images are public, so pulling them needs no login.
+- The Documentation tab explains where the image comes from and how to build it.
 
 ## 1.0.30
 
-- A fresh install now starts with its default options. Home Assistant refused to start it with "Missing required option 'firebase_username'", because the Firebase credentials were listed as defaults without a value. They are now optional fields with no default, shown on the Configuration tab once you turn on **Show unused optional configuration options**. Existing installs keep their settings (#114).
+- Fixed a fresh install failing to start with "Missing required option 'firebase_username'". `firebase_username` and `firebase_password` are now optional, with no default, and appear on the Configuration tab when **Show unused optional configuration options** is on. Existing installs keep their settings.
 
 ## 1.0.29
 
-- On newer BMPro node families, downloading the vehicle configuration (`app.json`) no longer lets a stray Bluetooth fragment drop or garble a chunk. It now applies the same response check the RVMN101C download already had. The RVMN101C is unaffected (#135).
+- On newer BMPro control nodes, downloading the RV's configuration can no longer be disrupted by a stray Bluetooth message that dropped or corrupted part of it. The RVMN101C is not affected.
 
 ## 1.0.28
 
-- No change in the add-on's behaviour. The shared Bluetooth library gains a stricter Bluetooth address parser for the Windows platform code, which the add-on doesn't use (#19).
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.27
 
-- New **Heat Source** select for each climate zone that has both a heat pump and a furnace: choose Furnace, Heat Pump or Both for Heat mode. As in the BMPro app, a choice only takes effect while the zone is in Heat. Zones with one heat source get none (#112).
+- New **Heat Source** select for each climate zone that has both a heat pump and a furnace: chooses Furnace, Heat Pump or Both for Heat mode. As in BMPRO Connect, a choice takes effect only while the zone is in Heat. Zones with one heat source do not have one.
 
 ## 1.0.26
 
-- A climate zone whose node reports heat source 0 is now treated as a heat pump, as the BMPro app does, instead of an unknown heat source that the cloud mirror published as a furnace (#101).
-- The cloud mirror no longer publishes placeholder values as a zone's real state. A zone with no reading yet shows fan speed high (there is no "auto" fan speed; Auto is a climate mode), and an unknown heat source is left out (#101).
+- A climate zone whose node reports heat source 0 is now treated as a heat pump, as BMPRO Connect does. Previously, it was treated as an unknown heat source, which the Cloud showed as a furnace.
+- The Cloud no longer receives placeholder values as a zone's real state. A zone with no reading yet shows fan speed high, and an unknown heat source is left out.
 
 ## 1.0.25
 
-- New **Generator State** sensor: Running, Stopped, or Starting/Stopping while the auto-gen smart start is starting or stopping the generator (#20).
-- New **Generator Start Output Fault** and **Generator Stop Output Fault** problem sensors for a gas generator. They report a fault on the line that drives the generator's start or stop input, which the BMPro app shows as a marker on its Start and Stop buttons (#20).
+- New **Generator State** sensor: Running, Stopped, or Starting/Stopping while the auto-gen smart start is starting or stopping the generator.
+- New **Generator Start Output Fault** and **Generator Stop Output Fault** problem sensors for a gas generator. They report a fault on the line that drives the generator's start or stop input, which BMPRO Connect shows as a marker on its Start and Stop buttons.
 
 ## 1.0.24
 
-- The cloud mirror now reports the generator's start and stop output faults separately from its general fault, and reports whether the auto-gen smart start is starting or stopping the generator, using the BMPro app's own keys. The BMPro app, when it reads the vehicle through the cloud, can now show the fault markers on a gas generator's Start and Stop buttons and its Starting/Stopping state. Showing these in Home Assistant comes in a later version (#20).
+- The Cloud now receives the generator's start and stop faults separately from its general fault, and whether the auto-gen smart start is starting or stopping it. BMPRO Connect, reading the RV through the Cloud, can then show its fault markers and its Starting/Stopping state. Home Assistant shows these from 1.0.25.
 
 ## 1.0.23
 
-- Downloading the vehicle configuration (`app.json`) from the BMPro node is more robust (#17). A late reply to a retried request can no longer put the wrong bytes into the file, and a node that doesn't report the file's length no longer gets its configuration cut off after the first chunk.
+- Downloading the RV's configuration from the control node is more reliable. A late reply to a retried request can no longer corrupt it, and the configuration from a node that does not report its size is no longer cut short.
 
 ## 1.0.22
 
-- Stopping the add-on, or rebuilding the connection, while the Bluetooth connection is being set up now ends the setup after the step in progress. Before, it carried on through authentication retries and every notification subscription, and a cancelled connect could start a full Bluetooth scan. A deliberate stop is also no longer logged as the Bluetooth provider failing (#18).
-- Shutting down the Bluetooth connection while a request is still in flight no longer risks corrupting the connection's internal state (#18).
+- Stopping the add-on, or rebuilding the connection, while Bluetooth is being set up now ends the setup after the step in progress. Previously, it continued through every remaining step, and could start a full Bluetooth scan. A deliberate stop is no longer logged as a Bluetooth failure.
+- Stopping the Bluetooth connection while a request is still in progress is now safe.
 
 ## 1.0.21
 
-- Stopping the add-on, or pressing **Force BLE Reconnect**, while it is connecting to the BMPro node now takes effect straight away. A connect that hangs gives up after a bounded time instead of blocking the next attempt (#11).
-- A cancelled connect is no longer reported as a pairing failure that asks you to put the node into pairing mode.
+- Stopping the add-on, or pressing **Force BLE Reconnect**, while it is connecting to the control node now takes effect immediately. A connection attempt that hangs now gives up after a time limit instead of blocking the next attempt.
+- A cancelled connection attempt is no longer reported as a pairing failure with a request to put the node into pairing mode.
 
 ## 1.0.20
 
-- Stopping the add-on or rebuilding its Bluetooth connection, for example with **Force BLE Reconnect**, now actually disconnects from the BMPro node, so the BMPro phone app can connect straight away (#12). Before, the node stayed connected to the Home Assistant host until BlueZ timed the link out.
-- A Bluetooth disconnect that fails, for example straight after the host's Bluetooth service restarts, is now logged instead of crashing the add-on (#120).
+- Stopping the add-on, or pressing **Force BLE Reconnect**, now disconnects from the control node, so BMPRO Connect can connect over Bluetooth immediately. Previously, the node stayed connected to the Home Assistant host until the host's Bluetooth timed the link out.
+- A Bluetooth disconnect that fails, for example just after the host's Bluetooth service restarts, is now logged instead of crashing the add-on.
 
 ## 1.0.19
 
-- The bridge can find a BMPro node that the host's Bluetooth stack has never seen, so a fresh Home Assistant install pairs without first running `scan le` in `bluetoothctl` (#113). Every Bluetooth scan used to fail on Linux, so the bridge only found a node that BlueZ already had cached. It now runs its own scan for the BMPro service and stops as soon as it finds the node.
-- If the node can't be found, the log still names the Bluetooth adapter that was searched.
-- Bluetooth scan warnings, such as a powered-off adapter, now appear in the log at the default `info` level. They used to be visible only with `debug` logging.
-- A remembered `ble_device_id` no longer stops the scan when the host's Bluetooth stack has forgotten the node, for example after a backup is restored onto new hardware.
+- The add-on can now find a control node the host's Bluetooth has never seen, so a fresh Home Assistant install pairs without first running `scan le` in `bluetoothctl`. Previously, it could only find a node the host already knew.
+- If the node cannot be found, the log names the Bluetooth adapter that was searched.
+- Bluetooth scan warnings, such as an adapter being switched off, now appear at the default `info` log level, not only at `debug`.
+- A remembered node no longer prevents the scan when the host has forgotten it, for example after a backup is restored onto new hardware.
 
 ## 1.0.18
 
-- The bridge works with a Bluetooth adapter that isn't named `hci0`, for example a USB dongle the host numbers `hci1` (#15). Before, pairing and connecting failed on such hosts because the bridge sent its BlueZ calls to `hci0`. With more than one adapter, the bridge picks one, not necessarily `hci0`. Once the bridge has found the node, it logs which adapter it is connecting through at the information level: `using Bluetooth adapter /org/bluez/hciN`.
+- The add-on now works with a Bluetooth adapter not named `hci0`, such as a USB dongle the host numbers `hci1`. Previously, pairing and connecting failed on such hosts. With more than one adapter, the add-on picks one, not necessarily `hci0`, and logs which: `using Bluetooth adapter /org/bluez/hciN`.
 
 ## 1.0.17
 
-- Rebuilt with updated dependencies, including the Bluetooth library (InTheHand.BluetoothLE 4.0.45), its D-Bus layer (Tmds.DBus 0.95.1), the Firestore client (4.6.0), MQTTnet (5.2) and the .NET 10.0.14 runtime libraries. The bridge's behaviour is unchanged.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.16
 
-- Rebuilt against the updated shared Bluetooth transport, which fixes reconnecting in the Android app (#110). The new code only runs on Android, so the bridge behaves the same.
-- Disconnecting the Firebase connection straight after it connects no longer fails with an `ObjectDisposedException` (#118).
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.15
 
-- Home Assistant entities keep updating after the vehicle connection is rebuilt, including after pressing **Force BLE Reconnect**. Before, any rebuild silently stopped the bridge until the add-on was restarted.
-- The bridge keeps retrying the MQTT broker until it comes back, so a Mosquitto restart or a short network outage no longer leaves it offline. Once the broker is back, the bridge finishes any entity discovery that was cut off and re-sends the vehicle's current state, so entities don't keep showing values from before the outage.
-- The bridge publishes `offline` to its availability topic when it stops.
+- Home Assistant entities now keep updating after the connection to the RV is rebuilt, including after **Force BLE Reconnect**. Previously, any rebuild stopped updates without warning until the add-on was restarted.
+- The add-on keeps retrying the MQTT broker until it returns, so a Mosquitto restart or a short network outage no longer leaves it offline. Once the broker is back, the add-on finishes setting up any entities that were interrupted and re-sends the RV's current state.
+- The add-on now publishes `offline` to its MQTT availability topic when it stops.
 
 ## 1.0.14
 
-- A Bluetooth command that fails because the link is gone now marks the connection disconnected straight away, so the bridge starts reconnecting instead of waiting for the next liveness check.
-- The Bluetooth liveness check runs every 15 seconds (was 30), so the "BLE Connected" sensor reacts to a silent drop within about half a minute.
-- The bridge recovers on its own after the system D-Bus or BlueZ restarts (for example a Home Assistant OS update of the Bluetooth stack); it used to need an add-on restart.
+- A Bluetooth command that fails because the link is gone now starts a reconnect immediately, instead of waiting for the next link check.
+- The Bluetooth link is now checked every 15 seconds, where it was 30, so **BLE Connected** reflects a silent drop within about half a minute.
+- The add-on now recovers on its own after the host's Bluetooth service restarts, for example during a Home Assistant OS update. Previously, it needed a restart.
 
 ## 1.0.13
 
-- Rebuilt against the updated shared Firebase transport (read retries, session reuse, adjustable polling). The bridge's own cloud mirror is unchanged, so there is no difference in behaviour.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.12
 
-- A standby connection is configured with the vehicle's climate zone count before its first status refresh.
-- Reconnect timing counts planned retry delays instead of wall-clock time.
+Maintenance release: no change in how the add-on behaves.
 
 ## 1.0.11
 
-- A climate zone that reports an unknown fan speed is sent High, the default, and Home Assistant shows High rather than an unknown speed.
-- Internal: the shared cloud transport reads Firebase errors and timestamps more carefully. The bridge's own cloud mirror is unchanged.
+- A climate zone that reports an unknown fan speed is now sent High, the default, and Home Assistant shows High rather than an unknown speed.
 
 ## 1.0.10
 
-- Status refreshes are answered from one that has just finished instead of starting another, and each Bluetooth service's characteristics are looked up once per connection.
+- Connecting is faster: the add-on looks up each of the node's Bluetooth features once per connection, and no longer reads every status twice at start-up.
 
 ## 1.0.9
 
-- A Bluetooth link that is already up is reused instead of being rebuilt.
-- The version banner at start-up is framed so it stands out in the log.
+- Connecting is faster when the host's Bluetooth link to the node is already up: the add-on uses it instead of resetting it.
+- The version banner at start-up is framed to stand out in the log.
 
 ## 1.0.8
 
-- The add-on leaves the node's Bluetooth pairing alone when the host has no key for it.
+- The add-on no longer resets the node's pairing on the host when there is nothing to reset, which caused aborted connection attempts and retries.
 
 ## 1.0.7
 
-- Concurrent status refreshes are combined into one.
+- Status reads requested at the same time are combined into one.
 - The add-on logs its version when it starts.
 
 ## 1.0.6
 
-- Connecting uses the host's Bluetooth link directly, which is quicker.
+- Connecting is faster.
 
 ## 1.0.5
 
-- A node that is already bonded to the host can be connected to.
+- The add-on can now connect to a node the host is already paired with.
 
 ## 1.0.4
 
-- The add-on waits for the node to settle after BlueZ rediscovers it, before connecting.
-- Status refresh counts come from the cached vehicle profile before the first connection, so the first refresh asks for the right number of zones.
+- The add-on waits for the node to settle after the host's Bluetooth finds it again, before connecting.
+- The first status read requests the correct number of climate zones, using the RV's saved configuration.
 
 ## 1.0.3
 
-- Downloading the vehicle configuration (`app.json`) is quicker: each chunk request now fits in one Bluetooth write instead of three.
+- Downloading the RV's configuration from the node is faster.
 
 ## 1.0.2
 
-- More reliable pairing and connection on Linux: a refused bond is recognised, stale Bluetooth state is cleared at most once per run instead of on every connect, and the add-on waits for BlueZ to rediscover the node instead of a fixed delay, saying so if it doesn't reappear.
-- A connection that is still reconnecting no longer fails the vehicle's configuration, and the first status refresh asks for at most five climate zones when none are configured.
-- After a Bluetooth drop, the add-on reconnects. Before, every attempt failed with an `ObjectDisposedException` until the add-on was restarted (#6).
-- A reconnect's first status refresh uses the vehicle's cached climate zone and generator counts.
+- Pairing and connecting are more reliable: a refused pairing is recognised, and the add-on waits for the host's Bluetooth to find the node again instead of waiting a fixed time, and logs it if the node does not reappear.
+- After a Bluetooth drop, the add-on now reconnects. Previously, every attempt failed until the add-on was restarted.
+- A connection that is still reconnecting no longer prevents reading the RV's configuration.
 
 ## 1.0.1
 
-- Water tank levels update as the node reports them.
+- Water tank levels now update as the node reports them.
 
 ## 1.0.0
 
-Initial Release
+Initial release.
