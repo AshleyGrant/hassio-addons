@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.124
+
+- On amd64, the add-on now needs a processor with x86-64-v2 support, which Intel processors have had since about 2009 and AMD processors since about 2011. On an older processor it doesn't start. Raspberry Pi and other arm64 devices are unaffected.
+- The add-on now runs on .NET 11, on an Ubuntu 26.04 base. On a Raspberry Pi 4 it may take a few seconds longer to start, because some of .NET 11's precompiled code expects a newer processor than the Pi 4's and is compiled when the add-on starts instead.
+- If part of the add-on fails in a way it can't recover from, it now logs why and stops with exit code 1, so Home Assistant shows it as failed rather than stopped. If the app's **Watchdog** switch is on, Home Assistant then starts it again. Before, it stopped as if it had been stopped on purpose.
+
 ## 1.0.123
 
 - Each log line now names its source with `StonerControl.` instead of `RiverstoneControl.`, for example `info: StonerControl.HomeAssistant.…`, and some of the names after that prefix have changed as well. If you search or filter the add-on's log by these names, update the search. The messages themselves are unchanged.

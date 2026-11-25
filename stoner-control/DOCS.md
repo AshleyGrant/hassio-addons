@@ -414,6 +414,10 @@ The bridge keeps itself connected without an add-on restart:
   state so Home Assistant catches up on anything that changed in the meantime.
 - **Shutdown.** When the add-on stops it publishes `offline` to
   `<base topic>/availability`, so all of its entities show as unavailable.
+- **A failure it can't recover from.** If part of the add-on fails in a way
+  it can't recover from, it logs why and stops with exit code 1, so Home
+  Assistant shows it as failed rather than stopped. If the app's **Watchdog**
+  switch is on, Home Assistant then starts it again.
 
 ## The app's image
 
