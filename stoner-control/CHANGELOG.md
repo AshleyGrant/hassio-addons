@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.125
+
+- The add-on's log no longer shows your RV's full Bluetooth address or your vehicle's full cloud ID, so the log is safe to share. A Bluetooth address now shows only its last two bytes, for example `XX:XX:XX:XX:12:34`, also inside BlueZ paths such as `/org/bluez/hci0/dev_XX_XX_XX_XX_12_34`. A cloud ID shows only its last four characters, for example `***b2e0`. That's still enough to tell lines apart. If you search the log for your node's full address, search for its last two bytes instead.
+- If you set `ble_device_id`, the add-on still uses the whole value. Only the log line that shows it is shortened.
+
 ## 1.0.124
 
 - On amd64, the add-on now needs a processor with x86-64-v2 support, which Intel processors have had since about 2009 and AMD processors since about 2011. On an older processor it doesn't start. Raspberry Pi and other arm64 devices are unaffected.
